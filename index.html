@@ -1,582 +1,350 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" class="dark">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Global News Dashboard</title>
+    <title>myAInews - Israeli Politics Updates</title>
     <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
-    <link href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.2.1/css/all.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.1.1/css/all.min.css">
     <style>
-        :root {
-            --bg-primary: #ffffff;
-            --bg-secondary: #f3f4f6;
-            --text-primary: #111827;
-            --text-secondary: #4b5563;
-            --border-color: #e5e7eb;
-            --blue-news: #3b82f6;
-            --red-news: #ef4444;
-            --purple-news: #8b5cf6;
-            --white-news: #f9fafb;
-            --blue-bg: rgba(59, 130, 246, 0.1);
-            --red-bg: rgba(239, 68, 68, 0.1);
-            --purple-bg: rgba(139, 92, 246, 0.1);
-            --white-bg: rgba(249, 250, 251, 0.9);
-        }
-
-        .dark-mode {
-            --bg-primary: #1f2937;
-            --bg-secondary: #111827;
-            --text-primary: #f9fafb;
-            --text-secondary: #d1d5db;
-            --border-color: #374151;
-            --blue-news: #60a5fa;
-            --red-news: #f87171;
-            --purple-news: #a78bfa;
-            --white-news: #ffffff;
-            --blue-bg: rgba(96, 165, 250, 0.2);
-            --red-bg: rgba(248, 113, 113, 0.2);
-            --purple-bg: rgba(167, 139, 250, 0.2);
-            --white-bg: rgba(255, 255, 255, 0.1);
-        }
-
-        body {
-            background-color: var(--bg-primary);
-            color: var(--text-primary);
-            transition: all 0.3s ease;
-        }
-
-        .container {
-            max-width: 1400px;
-        }
-
-        .tab-content {
-            display: none;
-        }
-
-        .tab-content.active {
-            display: flex;
-        }
-
-        .news-panel {
-            height: calc(100vh - 180px);
-            overflow-y: auto;
-            background-color: var(--bg-secondary);
-            border: 1px solid var(--border-color);
-            border-radius: 0.5rem;
-        }
-
-        .message {
-            margin-bottom: 1rem;
-            padding: 0.75rem 1rem;
-            border-radius: 0.5rem;
+        .chat-bubble {
+            max-width: 80%;
+            border-radius: 18px;
+            padding: 10px 15px;
+            margin-bottom: 10px;
             position: relative;
-            transition: all 0.3s ease;
+            animation: fadeIn 0.5s ease-in-out;
         }
-
-        .message.blue {
-            background-color: var(--blue-bg);
-            border-left: 4px solid var(--blue-news);
+        
+        .chat-bubble.ai {
+            border-top-left-radius: 2px;
+            background-color: #2d3748;
+            color: #e2e8f0;
+            margin-right: auto;
         }
-
-        .message.red {
-            background-color: var(--red-bg);
-            border-left: 4px solid var(--red-news);
+        
+        .chat-bubble.news {
+            border-top-right-radius: 2px;
+            background-color: #3b82f6;
+            color: white;
+            margin-left: auto;
         }
-
-        .message.purple {
-            background-color: var(--purple-bg);
-            border-left: 4px solid var(--purple-news);
+        
+        .typing-indicator {
+            display: inline-block;
         }
-
-        .message.white {
-            background-color: var(--white-bg);
-            border-left: 4px solid var(--white-news);
-        }
-
-        .cartoon {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            margin-bottom: 2rem;
-            padding: 1rem;
-            border: 1px solid var(--border-color);
-            border-radius: 0.5rem;
-            background-color: var(--bg-secondary);
-            transition: all 0.3s ease;
-        }
-
-        .cartoon.blue {
-            border-top: 4px solid var(--blue-news);
-        }
-
-        .cartoon.red {
-            border-top: 4px solid var(--red-news);
-        }
-
-        .cartoon.purple {
-            border-top: 4px solid var(--purple-news);
-        }
-
-        .cartoon.white {
-            border-top: 4px solid var(--white-news);
-        }
-
-        .cartoon-avatar {
-            width: 80px;
-            height: 80px;
+        
+        .typing-indicator span {
+            height: 8px;
+            width: 8px;
+            background-color: #e2e8f0;
             border-radius: 50%;
-            background-color: #ddd;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            font-size: 2rem;
-            margin-bottom: 0.5rem;
-            overflow: hidden;
+            display: inline-block;
+            margin-right: 3px;
+            animation: pulse 1s infinite;
         }
-
-        .speech-bubble {
-            position: relative;
-            background-color: var(--bg-primary);
-            border-radius: 0.5rem;
-            padding: 0.75rem;
-            margin-top: 1rem;
-            width: 100%;
-            border: 1px solid var(--border-color);
+        
+        .typing-indicator span:nth-child(2) {
+            animation-delay: 0.2s;
         }
-
-        .speech-bubble:after {
-            content: '';
-            position: absolute;
-            top: -10px;
-            left: 50%;
-            transform: translateX(-50%);
-            border-width: 0 10px 10px;
-            border-style: solid;
-            border-color: var(--bg-primary) transparent;
+        
+        .typing-indicator span:nth-child(3) {
+            animation-delay: 0.4s;
         }
-
-        .filter-btn {
-            padding: 0.5rem 1rem;
-            border-radius: 0.5rem;
-            margin-right: 0.5rem;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            border: 1px solid var(--border-color);
+        
+        @keyframes pulse {
+            0% { transform: scale(1); opacity: 1; }
+            50% { transform: scale(1.2); opacity: 0.7; }
+            100% { transform: scale(1); opacity: 1; }
         }
-
-        .filter-btn.blue {
-            background-color: var(--blue-bg);
-            border-color: var(--blue-news);
-            color: var(--blue-news);
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
         }
-
-        .filter-btn.red {
-            background-color: var(--red-bg);
-            border-color: var(--red-news);
-            color: var(--red-news);
+        
+        .countdown {
+            font-variant-numeric: tabular-nums;
         }
-
-        .filter-btn.purple {
-            background-color: var(--purple-bg);
-            border-color: var(--purple-news);
-            color: var(--purple-news);
+        
+        .shimmer {
+            background: linear-gradient(90deg, #2d3748 0%, #4a5568 50%, #2d3748 100%);
+            background-size: 200% 100%;
+            animation: shimmer 2s infinite;
         }
-
-        .filter-btn.white {
-            background-color: var(--white-bg);
-            border-color: var(--white-news);
-            color: var(--text-primary);
+        
+        @keyframes shimmer {
+            0% { background-position: 200% 0; }
+            100% { background-position: -200% 0; }
         }
-
-        .filter-btn.active {
-            opacity: 1;
-            box-shadow: 0 0 0 2px var(--border-color);
-        }
-
-        .filter-btn:not(.active) {
-            opacity: 0.6;
-        }
-
-        .tab-button {
-            padding: 0.75rem 1.5rem;
-            border-bottom: 2px solid transparent;
-            cursor: pointer;
-            transition: all 0.3s ease;
-        }
-
-        .tab-button.active {
-            border-bottom: 2px solid var(--blue-news);
-            color: var(--blue-news);
-            font-weight: bold;
-        }
-
-        .slider-container {
-            width: 100%;
-            padding: 1rem;
-            background-color: var(--bg-secondary);
-            border-radius: 0.5rem;
-            margin-bottom: 1rem;
-            border: 1px solid var(--border-color);
-        }
-
-        .dark-mode-toggle {
-            position: relative;
-            width: 60px;
-            height: 30px;
-            border-radius: 15px;
-            background-color: var(--bg-secondary);
-            cursor: pointer;
-            transition: all 0.3s ease;
-            border: 1px solid var(--border-color);
-        }
-
-        .toggle-circle {
-            position: absolute;
-            top: 2px;
-            left: 2px;
-            width: 26px;
-            height: 26px;
-            border-radius: 50%;
-            background-color: var(--text-primary);
-            transition: all 0.3s ease;
-        }
-
-        .dark-mode .toggle-circle {
-            transform: translateX(30px);
-        }
-
-        .countdown-container {
-            background-color: var(--bg-secondary);
-            border-radius: 0.5rem;
-            padding: 0.75rem;
-            border: 1px solid var(--border-color);
-            width: 150px;
-            text-align: center;
-        }
-
-        .countdown-timer {
-            font-size: 1.25rem;
-            font-weight: bold;
-            color: var(--blue-news);
-        }
-
-        .countdown-label {
-            font-size: 0.875rem;
-            color: var(--text-secondary);
-        }
-
-        /* Scrollbar styles */
-        .news-panel::-webkit-scrollbar {
+        
+        /* Custom scrollbar */
+        ::-webkit-scrollbar {
             width: 8px;
         }
-
-        .news-panel::-webkit-scrollbar-track {
-            background: var(--bg-secondary);
+        
+        ::-webkit-scrollbar-track {
+            background: #1a202c;
         }
-
-        .news-panel::-webkit-scrollbar-thumb {
-            background-color: var(--border-color);
+        
+        ::-webkit-scrollbar-thumb {
+            background: #4a5568;
             border-radius: 4px;
+        }
+        
+        ::-webkit-scrollbar-thumb:hover {
+            background: #718096;
         }
     </style>
 </head>
-<body>
-    <div class="container mx-auto px-4 py-6">
-        <div class="flex justify-between items-center mb-6">
-            <h1 class="text-3xl font-bold">Global News Dashboard</h1>
-            <div class="flex items-center space-x-4">
-                <div class="countdown-container">
-                    <div id="countdown-timer" class="countdown-timer">01:00</div>
-                    <div class="countdown-label">Until next update</div>
+<body class="bg-gray-900 text-white min-h-screen">
+    <div class="container mx-auto px-4 py-6 max-w-4xl">
+        <header class="mb-6">
+            <div class="flex items-center justify-between">
+                <div class="flex items-center">
+                    <i class="fas fa-newspaper text-blue-500 text-3xl mr-3"></i>
+                    <h1 class="text-3xl font-bold text-blue-400">myAInews</h1>
                 </div>
-                <div class="dark-mode-toggle" id="darkModeToggle">
-                    <div class="toggle-circle"></div>
+                <div class="flex items-center space-x-4">
+                    <div class="text-sm text-gray-400">
+                        Next update in <span id="countdown" class="font-mono text-yellow-400 countdown">10:00</span>
+                    </div>
+                    <button id="theme-toggle" class="p-2 rounded-full hover:bg-gray-700 focus:outline-none">
+                        <i class="fas fa-sun text-yellow-400"></i>
+                    </button>
                 </div>
+            </div>
+            <p class="text-gray-400 mt-2">Real-time Israeli politics updates, refreshed every 10 minutes</p>
+        </header>
+        
+        <div class="relative bg-gray-800 rounded-lg shadow-xl overflow-hidden mb-6">
+            <div class="absolute top-0 left-0 right-0 bg-gray-700 px-4 py-2 flex items-center">
+                <div class="flex space-x-2 mr-2">
+                    <div class="w-3 h-3 bg-red-500 rounded-full"></div>
+                    <div class="w-3 h-3 bg-yellow-500 rounded-full"></div>
+                    <div class="w-3 h-3 bg-green-500 rounded-full"></div>
+                </div>
+                <div class="text-sm font-medium text-center w-full">Israeli Politics - Live Chat</div>
+            </div>
+            
+            <div id="chat-container" class="p-4 pt-12 h-[500px] overflow-y-auto">
+                <div class="chat-bubble ai">
+                    <p class="mb-1">Hello! I'm your AI news assistant. I'll provide you with the latest updates on Israeli politics.</p>
+                    <div class="text-xs text-gray-500">Just now</div>
+                </div>
+                <div id="loading-indicator" class="chat-bubble ai py-3">
+                    <div class="typing-indicator">
+                        <span></span>
+                        <span></span>
+                        <span></span>
+                    </div>
+                </div>
+                <!-- News messages will be added here by JavaScript -->
             </div>
         </div>
-
-        <div class="tab-nav flex border-b border-gray-300 mb-6">
-            <div class="tab-button active" data-tab="israel">Israel</div>
-            <div class="tab-button" data-tab="usa">USA</div>
-            <div class="tab-button" data-tab="international">International</div>
+        
+        <div class="bg-gray-800 rounded-lg p-4 mb-6">
+            <h2 class="text-xl font-semibold text-blue-400 mb-3"><i class="fas fa-info-circle mr-2"></i>About</h2>
+            <p class="text-gray-300">This AI-powered news dashboard provides the latest updates on Israeli politics in a chat-style format. The content is automatically refreshed every 10 minutes to ensure you stay informed with the most recent developments.</p>
         </div>
-
-        <div class="filter-container flex mb-4">
-            <div class="mr-2 text-sm flex items-center">Filter:</div>
-            <div class="filter-btn blue active" data-color="blue">Regular</div>
-            <div class="filter-btn red active" data-color="red">Extraordinary</div>
-            <div class="filter-btn purple active" data-color="purple">Deep State</div>
-            <div class="filter-btn white active" data-color="white">High Ranking</div>
-        </div>
-
-        <!-- Israel Tab -->
-        <div id="israel-tab" class="tab-content active">
-            <div class="slider-container mb-4">
-                <h3 class="text-lg font-semibold mb-2">People vs Deep State Balance</h3>
-                <input type="range" min="0" max="100" value="50" class="w-full" id="israel-slider">
-                <div class="flex justify-between mt-1">
-                    <span>People</span>
-                    <span>Deep State</span>
-                </div>
-            </div>
-            <div class="flex flex-col md:flex-row gap-4">
-                <div class="news-panel w-full md:w-1/2 p-4" id="israel-news">
-                    <!-- News messages will be dynamically inserted here -->
-                </div>
-                <div class="news-panel w-full md:w-1/2 p-4" id="israel-cartoons">
-                    <!-- Cartoon representations will be dynamically inserted here -->
-                </div>
-            </div>
-        </div>
-
-        <!-- USA Tab -->
-        <div id="usa-tab" class="tab-content">
-            <div class="slider-container mb-4">
-                <h3 class="text-lg font-semibold mb-2">People vs Deep State Balance</h3>
-                <input type="range" min="0" max="100" value="60" class="w-full" id="usa-slider">
-                <div class="flex justify-between mt-1">
-                    <span>People</span>
-                    <span>Deep State</span>
-                </div>
-            </div>
-            <div class="flex flex-col md:flex-row gap-4">
-                <div class="news-panel w-full md:w-1/2 p-4" id="usa-news">
-                    <!-- News messages will be dynamically inserted here -->
-                </div>
-                <div class="news-panel w-full md:w-1/2 p-4" id="usa-cartoons">
-                    <!-- Cartoon representations will be dynamically inserted here -->
-                </div>
-            </div>
-        </div>
-
-        <!-- International Tab -->
-        <div id="international-tab" class="tab-content">
-            <div class="slider-container mb-4">
-                <h3 class="text-lg font-semibold mb-2">People vs Deep State Balance</h3>
-                <input type="range" min="0" max="100" value="40" class="w-full" id="international-slider">
-                <div class="flex justify-between mt-1">
-                    <span>People</span>
-                    <span>Deep State</span>
-                </div>
-            </div>
-            <div class="flex flex-col md:flex-row gap-4">
-                <div class="news-panel w-full md:w-1/2 p-4" id="international-news">
-                    <!-- News messages will be dynamically inserted here -->
-                </div>
-                <div class="news-panel w-full md:w-1/2 p-4" id="international-cartoons">
-                    <!-- Cartoon representations will be dynamically inserted here -->
-                </div>
-            </div>
-        </div>
+        
+        <footer class="text-center text-gray-500 text-sm py-4">
+            <p>Powered by NewsAPI and AI technology • <span id="current-year"></span></p>
+        </footer>
     </div>
-
+    
     <script>
-        // Mock news data for each tab
-        const mockNewsData = {
-            israel: [
-                { title: "Knesset debates new tax reform bill", content: "The Israeli parliament is debating a comprehensive tax reform bill aimed at simplifying the tax code and reducing burden on middle-class families.", category: "blue", person: "Israeli Lawmaker", personIcon: "👨‍💼", action: "Just proposed a simplified tax system that would benefit the middle class." },
-                { title: "Prime Minister addresses security concerns at northern border", content: "Israeli Prime Minister held an emergency cabinet meeting to address escalating tensions at the northern border, promising decisive action to protect citizens.", category: "white", person: "Prime Minister", personIcon: "🇮🇱", action: "Just ordered increased security measures along the northern border after recent incidents." },
-                { title: "Unusual military movements spotted near Gaza", content: "Military analysts report unusual troop movements near the Gaza border, raising concerns about potential escalation in the region.", category: "red", person: "Military Commander", personIcon: "🪖", action: "Just ordered unexpected troop movements near the Gaza border without explanation to the public." },
-                { title: "Foreign intelligence reportedly operating within ministerial offices", content: "Anonymous sources claim evidence of foreign intelligence operations within key ministerial offices, raising concerns about national security breaches.", category: "purple", person: "Intelligence Official", personIcon: "🕵️", action: "Was just caught trying to cover up evidence of foreign agents within the Defense Ministry." },
-                { title: "Budget committee approves new infrastructure funding", content: "The budget committee has approved 2.3 billion shekels for infrastructure improvements across the country, focusing on transportation and water systems.", category: "blue", person: "Finance Minister", personIcon: "👨‍💼", action: "Just approved a massive infrastructure budget after meeting with construction company executives." },
-                { title: "Defense Minister calls for increased military budget", content: "In light of regional tensions, the Defense Minister has called for a significant increase to the military budget for the coming fiscal year.", category: "white", person: "Defense Minister", personIcon: "🛡️", action: "Just demanded a 15% increase in military spending while cutting social programs." },
-                { title: "Leaked documents suggest unauthorized surveillance program", content: "Classified documents leaked to media outlets suggest an unauthorized surveillance program targeting political activists and journalists.", category: "purple", person: "Intelligence Director", personIcon: "🕴️", action: "Was just implicated in authorizing illegal surveillance of journalists and opposition leaders." },
-                { title: "Unexpected cabinet reshuffle announced", content: "The Prime Minister has announced a surprise cabinet reshuffle, removing three ministers and appointing new faces to key positions.", category: "red", person: "Deputy Minister", personIcon: "👩‍💼", action: "Just got unexpectedly promoted after the mysterious resignation of her superior." }
-            ],
-            usa: [
-                { title: "Congress passes bipartisan infrastructure bill", content: "After months of negotiation, Congress has passed a bipartisan infrastructure bill allocating $1.2 trillion to roads, bridges, and broadband internet.", category: "blue", person: "Senator", personIcon: "👨‍💼", action: "Just negotiated a compromise that got both parties to support the infrastructure bill." },
-                { title: "President signs executive order on climate change", content: "The President has signed a sweeping executive order addressing climate change and setting ambitious carbon reduction targets for federal agencies.", category: "white", person: "President", personIcon: "🇺🇸", action: "Just bypassed Congress with an executive order on climate policy that energy companies are fighting." },
-                { title: "Federal Reserve implements unexpected interest rate hike", content: "The Federal Reserve has implemented a surprise 0.5% interest rate hike, citing inflation concerns despite previous statements suggesting stability.", category: "red", person: "Federal Reserve Chair", personIcon: "💰", action: "Just announced a surprise interest rate hike after private meetings with major bank CEOs." },
-                { title: "Classified program funding billions to unknown contractors revealed", content: "A congressional oversight committee has uncovered a classified program routing billions in taxpayer dollars to unidentified defense contractors.", category: "purple", person: "Defense Contractor CEO", personIcon: "💼", action: "Just received another billion-dollar contract through a classified program with no competitive bidding." },
-                { title: "Supreme Court agrees to hear controversial election case", content: "The Supreme Court has agreed to hear a case that could significantly impact how elections are conducted and votes are counted across the country.", category: "blue", person: "Supreme Court Justice", personIcon: "⚖️", action: "Just voted to hear a case that could fundamentally change election procedures nationwide." },
-                { title: "Vice President leads diplomatic mission to Asia", content: "The Vice President is leading a high-profile diplomatic mission to several Asian nations, focusing on trade relations and security partnerships.", category: "white", person: "Vice President", personIcon: "🇺🇸", action: "Just negotiated a secret security agreement during the Asian diplomatic tour." },
-                { title: "Intelligence agencies withholding information from congressional oversight", content: "Multiple sources claim intelligence agencies are systematically withholding critical information from congressional oversight committees.", category: "purple", person: "Intelligence Director", personIcon: "🕵️", action: "Was just caught lying to Congress about surveillance programs targeting American citizens." },
-                { title: "Emergency White House meeting called after midnight", content: "Sources report an emergency meeting was called at the White House after midnight, with senior defense and intelligence officials attending.", category: "red", person: "National Security Advisor", personIcon: "🔐", action: "Just called an emergency meeting at 2 AM without providing explanation to the press." }
-            ],
-            international: [
-                { title: "EU adopts new climate change framework", content: "The European Union has adopted a comprehensive climate change framework that sets binding emission reduction targets for all member states.", category: "blue", person: "EU Commissioner", personIcon: "🇪🇺", action: "Just announced ambitious climate targets that will require major economic adjustments across Europe." },
-                { title: "UN Secretary-General warns of humanitarian crisis", content: "The UN Secretary-General has issued an urgent warning about an impending humanitarian crisis in several African nations experiencing severe drought.", category: "white", person: "UN Secretary-General", personIcon: "🇺🇳", action: "Just called for immediate humanitarian aid to drought-stricken regions while criticizing wealthy nations for inaction." },
-                { title: "Unexpected currency devaluation shocks global markets", content: "A major Asian economy has unexpectedly devalued its currency by 15%, sending shockwaves through global financial markets.", category: "red", person: "Finance Minister", personIcon: "💴", action: "Just defended the sudden currency devaluation while his family reportedly moved assets offshore last week." },
-                { title: "Private military contractors seen in conflict zone despite denials", content: "Despite official denials, evidence shows private military contractors operating in a conflict zone under apparent direction from major powers.", category: "purple", person: "Private Military CEO", personIcon: "🪖", action: "Was just spotted meeting with government officials after publicly denying operations in the conflict zone." },
-                { title: "G20 reaches agreement on minimum corporate tax", content: "G20 nations have reached a landmark agreement establishing a global minimum corporate tax rate of 15% to prevent tax avoidance.", category: "blue", person: "Finance Minister", personIcon: "📊", action: "Just signed the global tax agreement while quietly adding exemptions that benefit companies in their country." },
-                { title: "Russian President proposes new security framework", content: "The Russian President has proposed a new international security framework that would reshape power dynamics in Eastern Europe.", category: "white", person: "Russian President", personIcon: "🇷🇺", action: "Just suggested a new security arrangement that Western analysts say would undermine NATO's influence." },
-                { title: "Leaked documents reveal secret trade agreements", content: "Thousands of leaked documents reveal secret trade agreements negotiated without public knowledge, potentially overriding national regulations.", category: "purple", person: "Trade Negotiator", personIcon: "📝", action: "Was just exposed for secretly negotiating trade deals that bypass environmental and labor protections." },
-                { title: "Diplomatic crisis erupts after ambassador's expulsion", content: "A diplomatic crisis has erupted after the surprise expulsion of a Western ambassador from a Middle Eastern nation with no formal explanation.", category: "red", person: "Foreign Minister", personIcon: "🌐", action: "Just expelled a Western ambassador hours after meeting with rival power representatives." }
-            ]
-        };
-
-        // DOM elements
-        const tabButtons = document.querySelectorAll('.tab-button');
-        const tabContents = document.querySelectorAll('.tab-content');
-        const filterButtons = document.querySelectorAll('.filter-btn');
-        const darkModeToggle = document.getElementById('darkModeToggle');
-        const countdownTimer = document.getElementById('countdown-timer');
+        // API Key for NewsAPI
+        const API_KEY = "330b7eb40246456dbf18361191ae93be";
         
-        // Initialize tabs
-        tabButtons.forEach(button => {
-            button.addEventListener('click', () => {
-                const tabName = button.getAttribute('data-tab');
-                
-                // Update active tab button
-                tabButtons.forEach(btn => btn.classList.remove('active'));
-                button.classList.add('active');
-                
-                // Update active tab content
-                tabContents.forEach(content => content.classList.remove('active'));
-                document.getElementById(`${tabName}-tab`).classList.add('active');
-            });
-        });
+        // DOM Elements
+        const chatContainer = document.getElementById('chat-container');
+        const loadingIndicator = document.getElementById('loading-indicator');
+        const countdownEl = document.getElementById('countdown');
+        const themeToggle = document.getElementById('theme-toggle');
+        const currentYearEl = document.getElementById('current-year');
         
-        // Initialize filters
-        filterButtons.forEach(button => {
-            button.addEventListener('click', () => {
-                const color = button.getAttribute('data-color');
-                button.classList.toggle('active');
-                
-                // Update visibility of news items
-                document.querySelectorAll(`.message.${color}, .cartoon.${color}`).forEach(item => {
-                    item.style.display = button.classList.contains('active') ? 'block' : 'none';
-                });
-            });
-        });
+        // Set current year
+        currentYearEl.textContent = new Date().getFullYear();
         
-        // Dark mode toggle
-        darkModeToggle.addEventListener('click', () => {
-            document.body.classList.toggle('dark-mode');
-            localStorage.setItem('darkMode', document.body.classList.contains('dark-mode'));
-        });
-        
-        // Check for saved dark mode preference
-        if (localStorage.getItem('darkMode') === 'true') {
-            document.body.classList.add('dark-mode');
-        }
-        
-        // Initialize countdown timer
-        let countdown = 60; // Start with 1 minute
-        let isFirstUpdate = true;
-        
-        function updateCountdown() {
-            const minutes = Math.floor(countdown / 60);
-            const seconds = countdown % 60;
-            countdownTimer.textContent = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+        // Theme toggle functionality
+        themeToggle.addEventListener('click', () => {
+            document.documentElement.classList.toggle('dark');
+            const isDark = document.documentElement.classList.contains('dark');
             
-            if (countdown <= 0) {
-                // Fetch new news
-                updateNews();
-                
-                // Reset countdown - first time 1 minute, then 5 minutes
-                countdown = isFirstUpdate ? 300 : 300; // 5 minutes = 300 seconds
-                isFirstUpdate = false;
+            if (isDark) {
+                themeToggle.innerHTML = '<i class="fas fa-sun text-yellow-400"></i>';
+                document.body.classList.add('bg-gray-900');
+                document.body.classList.remove('bg-gray-100');
             } else {
-                countdown--;
+                themeToggle.innerHTML = '<i class="fas fa-moon text-gray-700"></i>';
+                document.body.classList.remove('bg-gray-900');
+                document.body.classList.add('bg-gray-100');
+                document.body.classList.add('text-gray-900');
+                document.body.classList.remove('text-white');
             }
+        });
+        
+        // Time formatter
+        function formatTime(date) {
+            return new Intl.DateTimeFormat('en-US', {
+                hour: '2-digit',
+                minute: '2-digit',
+                hour12: true
+            }).format(date);
         }
         
-        // Update countdown every second
-        setInterval(updateCountdown, 1000);
-        
-        // Function to generate a random news item
-        function getRandomNews(newsArray) {
-            const randomIndex = Math.floor(Math.random() * newsArray.length);
-            return newsArray[randomIndex];
+        // Date formatter
+        function formatDate(dateString) {
+            const date = new Date(dateString);
+            return new Intl.DateTimeFormat('en-US', {
+                month: 'short',
+                day: 'numeric',
+                year: 'numeric',
+                hour: '2-digit',
+                minute: '2-digit',
+                hour12: true
+            }).format(date);
         }
         
-        // Function to create news messages
-        function createNewsMessage(news) {
+        // Create chat message
+        function createChatMessage(content, isAI = true, timestamp = null) {
             const messageDiv = document.createElement('div');
-            messageDiv.className = `message ${news.category}`;
+            messageDiv.className = `chat-bubble ${isAI ? 'ai' : 'news'}`;
             
-            const timeStamp = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+            // Create main content
+            const contentP = document.createElement('p');
+            contentP.className = 'mb-1';
+            contentP.innerHTML = content;
+            messageDiv.appendChild(contentP);
             
-            messageDiv.innerHTML = `
-                <div class="flex justify-between mb-1">
-                    <span class="font-bold">${news.title}</span>
-                    <span class="text-sm text-gray-500">${timeStamp}</span>
-                </div>
-                <p>${news.content}</p>
-            `;
+            // Add timestamp
+            const timeDiv = document.createElement('div');
+            timeDiv.className = 'text-xs text-gray-500';
+            timeDiv.textContent = timestamp ? formatDate(timestamp) : formatTime(new Date());
+            messageDiv.appendChild(timeDiv);
             
             return messageDiv;
         }
         
-        // Function to create cartoon representations
-        function createCartoon(news) {
-            const cartoonDiv = document.createElement('div');
-            cartoonDiv.className = `cartoon ${news.category}`;
-            
-            cartoonDiv.innerHTML = `
-                <div class="cartoon-avatar" style="background-color: ${getRandomColor(news.category)};">
-                    ${news.personIcon}
-                </div>
-                <div class="font-semibold text-center">${news.person}</div>
-                <div class="speech-bubble">
-                    "${news.action}"
-                </div>
-            `;
-            
-            return cartoonDiv;
-        }
-        
-        // Function to get a random color based on category
-        function getRandomColor(category) {
-            const colors = {
-                'blue': ['#dbeafe', '#bfdbfe', '#93c5fd'],
-                'red': ['#fee2e2', '#fecaca', '#fca5a5'],
-                'purple': ['#ede9fe', '#ddd6fe', '#c4b5fd'],
-                'white': ['#f9fafb', '#f3f4f6', '#e5e7eb']
-            };
-            
-            const colorArray = colors[category];
-            return colorArray[Math.floor(Math.random() * colorArray.length)];
-        }
-        
-        // Function to update news content
-        function updateNews() {
-            // Clear existing news
-            document.getElementById('israel-news').innerHTML = '';
-            document.getElementById('israel-cartoons').innerHTML = '';
-            document.getElementById('usa-news').innerHTML = '';
-            document.getElementById('usa-cartoons').innerHTML = '';
-            document.getElementById('international-news').innerHTML = '';
-            document.getElementById('international-cartoons').innerHTML = '';
-            
-            // Generate new news items
-            generateNewsForTab('israel', 6);
-            generateNewsForTab('usa', 6);
-            generateNewsForTab('international', 6);
-        }
-        
-        // Function to generate news for a specific tab
-        function generateNewsForTab(tabName, count) {
-            const newsContainer = document.getElementById(`${tabName}-news`);
-            const cartoonContainer = document.getElementById(`${tabName}-cartoons`);
-            
-            const availableNews = [...mockNewsData[tabName]];
-            
-            for (let i = 0; i < count; i++) {
-                if (availableNews.length === 0) break;
+        // Fetch news from NewsAPI
+        async function fetchIsraeliPoliticsNews() {
+            try {
+                loadingIndicator.style.display = 'block';
                 
-                // Get a random index
-                const randomIndex = Math.floor(Math.random() * availableNews.length);
-                const newsItem = availableNews.splice(randomIndex, 1)[0];
+                // Make two requests to get comprehensive coverage
+                const response1 = await fetch(`https://newsapi.org/v2/everything?q=Israel+politics+government&language=en&sortBy=publishedAt&pageSize=5&apiKey=${API_KEY}`);
+                const data1 = await response1.json();
                 
-                // Create and append news message
-                const messageDiv = createNewsMessage(newsItem);
-                newsContainer.appendChild(messageDiv);
+                const response2 = await fetch(`https://newsapi.org/v2/top-headlines?country=il&category=politics&pageSize=5&apiKey=${API_KEY}`);
+                const data2 = await response2.json();
                 
-                // Create and append cartoon representation
-                const cartoonDiv = createCartoon(newsItem);
-                cartoonContainer.appendChild(cartoonDiv);
+                // Combine results and sort by date
+                let articles = [];
+                if (data1.status === 'ok' && data1.articles) {
+                    articles = articles.concat(data1.articles);
+                }
+                if (data2.status === 'ok' && data2.articles) {
+                    articles = articles.concat(data2.articles);
+                }
+                
+                // Sort by published date (newest first)
+                articles.sort((a, b) => new Date(b.publishedAt) - new Date(a.publishedAt));
+                
+                // Remove duplicates
+                const uniqueArticles = [];
+                const titles = new Set();
+                
+                articles.forEach(article => {
+                    if (!titles.has(article.title) && article.title && article.description) {
+                        titles.add(article.title);
+                        uniqueArticles.push(article);
+                    }
+                });
+                
+                // Success message
+                chatContainer.insertBefore(
+                    createChatMessage(`I've found ${uniqueArticles.length} recent updates on Israeli politics. Here are the latest developments:`),
+                    loadingIndicator
+                );
+                
+                // Add news articles as chat messages
+                uniqueArticles.slice(0, 8).forEach(article => {
+                    const content = `
+                        <strong>${article.title}</strong>
+                        <p class="my-1">${article.description}</p>
+                        ${article.source && article.source.name ? `<div class="text-xs mt-1">Source: ${article.source.name}</div>` : ''}
+                        ${article.url ? `<a href="${article.url}" target="_blank" class="text-xs text-blue-300 hover:underline">Read full article</a>` : ''}
+                    `;
+                    
+                    chatContainer.insertBefore(
+                        createChatMessage(content, false, article.publishedAt),
+                        loadingIndicator
+                    );
+                });
+                
+                // Summary message
+                chatContainer.insertBefore(
+                    createChatMessage("That's all for now. I'll check for new updates in <strong>10 minutes</strong>. Stay tuned!"),
+                    loadingIndicator
+                );
+                
+                // Scroll to bottom
+                chatContainer.scrollTop = chatContainer.scrollHeight;
+            } catch (error) {
+                console.error('Error fetching news:', error);
+                chatContainer.insertBefore(
+                    createChatMessage(`I encountered an error while fetching news updates. This might be due to API limits or connection issues. I'll try again later.`),
+                    loadingIndicator
+                );
+            } finally {
+                loadingIndicator.style.display = 'none';
             }
         }
         
-        // Initialize sliders
-        const israelSlider = document.getElementById('israel-slider');
-        const usaSlider = document.getElementById('usa-slider');
-        const internationalSlider = document.getElementById('international-slider');
+        // Countdown timer
+        let timeLeft = 10 * 60; // 10 minutes in seconds
         
-        // Initial news generation
-        updateNews();
+        function updateCountdown() {
+            const minutes = Math.floor(timeLeft / 60);
+            const seconds = timeLeft % 60;
+            countdownEl.textContent = `${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
+            
+            if (timeLeft === 0) {
+                // Clear old news messages
+                const newsMessages = document.querySelectorAll('.chat-bubble.news');
+                newsMessages.forEach(msg => msg.remove());
+                
+                // Remove all but the first AI message
+                const aiMessages = document.querySelectorAll('.chat-bubble.ai');
+                aiMessages.forEach((msg, index) => {
+                    if (index > 0) msg.remove();
+                });
+                
+                // Add a refreshing message
+                chatContainer.insertBefore(
+                    createChatMessage("Refreshing news updates now..."),
+                    loadingIndicator
+                );
+                
+                // Fetch fresh news
+                fetchIsraeliPoliticsNews();
+                
+                // Reset countdown
+                timeLeft = 10 * 60;
+            } else {
+                timeLeft--;
+            }
+        }
+        
+        // Initialize
+        document.addEventListener('DOMContentLoaded', () => {
+            // Start countdown
+            setInterval(updateCountdown, 1000);
+            
+            // Fetch initial news
+            fetchIsraeliPoliticsNews();
+        });
     </script>
 </body>
 </html>
