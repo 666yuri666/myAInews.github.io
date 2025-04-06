@@ -1,33 +1,70 @@
 <!DOCTYPE html>
-<html lang="en" class="dark">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>myAInews - Israeli Politics Updates</title>
     <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.1.1/css/all.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.2.1/css/all.min.css">
     <style>
-        .chat-bubble {
+        :root {
+            --primary-bg: #121212;
+            --secondary-bg: #1e1e1e;
+            --accent-color: #6d28d9;
+            --text-color: #e2e2e2;
+            --secondary-text: #a0a0a0;
+            --border-color: #333333;
+            --user-bubble: #6d28d9;
+            --ai-bubble: #2d3748;
+        }
+        
+        body {
+            background-color: var(--primary-bg);
+            color: var(--text-color);
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+            height: 100vh;
+            overflow: hidden;
+        }
+        
+        .chat-container {
+            height: calc(100vh - 100px);
+            overflow-y: auto;
+            scrollbar-width: thin;
+            scrollbar-color: var(--border-color) var(--primary-bg);
+        }
+        
+        .chat-container::-webkit-scrollbar {
+            width: 8px;
+        }
+        
+        .chat-container::-webkit-scrollbar-track {
+            background: var(--primary-bg);
+        }
+        
+        .chat-container::-webkit-scrollbar-thumb {
+            background-color: var(--border-color);
+            border-radius: 20px;
+        }
+        
+        .message {
             max-width: 80%;
-            border-radius: 18px;
-            padding: 10px 15px;
-            margin-bottom: 10px;
+            margin-bottom: 12px;
+            line-height: 1.5;
             position: relative;
-            animation: fadeIn 0.5s ease-in-out;
+            display: flex;
+            flex-direction: column;
         }
         
-        .chat-bubble.ai {
-            border-top-left-radius: 2px;
-            background-color: #2d3748;
-            color: #e2e8f0;
-            margin-right: auto;
+        .user-message {
+            align-self: flex-end;
+            background-color: var(--user-bubble);
+            border-radius: 18px 18px 4px 18px;
         }
         
-        .chat-bubble.news {
-            border-top-right-radius: 2px;
-            background-color: #3b82f6;
-            color: white;
-            margin-left: auto;
+        .ai-message {
+            align-self: flex-start;
+            background-color: var(--ai-bubble);
+            border-radius: 18px 18px 18px 4px;
         }
         
         .typing-indicator {
@@ -35,316 +72,425 @@
         }
         
         .typing-indicator span {
-            height: 8px;
-            width: 8px;
-            background-color: #e2e8f0;
+            height: 10px;
+            width: 10px;
+            float: left;
+            margin: 0 1px;
+            background-color: var(--text-color);
+            display: block;
             border-radius: 50%;
-            display: inline-block;
-            margin-right: 3px;
-            animation: pulse 1s infinite;
+            opacity: 0.4;
+            animation: typing 1s infinite;
         }
         
-        .typing-indicator span:nth-child(2) {
+        .typing-indicator span:nth-of-type(1) {
+            animation-delay: 0s;
+        }
+        
+        .typing-indicator span:nth-of-type(2) {
             animation-delay: 0.2s;
         }
         
-        .typing-indicator span:nth-child(3) {
+        .typing-indicator span:nth-of-type(3) {
             animation-delay: 0.4s;
         }
         
+        @keyframes typing {
+            0% {
+                opacity: 0.4;
+                transform: scale(1);
+            }
+            50% {
+                opacity: 1;
+                transform: scale(1.2);
+            }
+            100% {
+                opacity: 0.4;
+                transform: scale(1);
+            }
+        }
+        
+        .message-time {
+            font-size: 0.7rem;
+            color: var(--secondary-text);
+            margin-top: 5px;
+            align-self: flex-end;
+        }
+        
+        .news-source {
+            font-style: italic;
+            font-size: 0.8rem;
+            opacity: 0.8;
+            margin-top: 4px;
+        }
+        
+        .pulse {
+            animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+        }
+        
         @keyframes pulse {
-            0% { transform: scale(1); opacity: 1; }
-            50% { transform: scale(1.2); opacity: 0.7; }
-            100% { transform: scale(1); opacity: 1; }
+            0%, 100% {
+                opacity: 1;
+            }
+            50% {
+                opacity: .5;
+            }
         }
         
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(10px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-        
-        .countdown {
-            font-variant-numeric: tabular-nums;
-        }
-        
-        .shimmer {
-            background: linear-gradient(90deg, #2d3748 0%, #4a5568 50%, #2d3748 100%);
-            background-size: 200% 100%;
-            animation: shimmer 2s infinite;
-        }
-        
-        @keyframes shimmer {
-            0% { background-position: 200% 0; }
-            100% { background-position: -200% 0; }
-        }
-        
-        /* Custom scrollbar */
-        ::-webkit-scrollbar {
-            width: 8px;
-        }
-        
-        ::-webkit-scrollbar-track {
-            background: #1a202c;
-        }
-        
-        ::-webkit-scrollbar-thumb {
-            background: #4a5568;
-            border-radius: 4px;
-        }
-        
-        ::-webkit-scrollbar-thumb:hover {
-            background: #718096;
+        .updating-overlay {
+            background: rgba(0, 0, 0, 0.8);
+            z-index: 50;
         }
     </style>
 </head>
-<body class="bg-gray-900 text-white min-h-screen">
-    <div class="container mx-auto px-4 py-6 max-w-4xl">
-        <header class="mb-6">
-            <div class="flex items-center justify-between">
-                <div class="flex items-center">
-                    <i class="fas fa-newspaper text-blue-500 text-3xl mr-3"></i>
-                    <h1 class="text-3xl font-bold text-blue-400">myAInews</h1>
+<body class="antialiased">
+    <div class="flex flex-col h-screen">
+        <!-- Header -->
+        <header class="bg-gray-900 border-b border-gray-800 p-4">
+            <div class="flex justify-between items-center">
+                <div class="flex items-center space-x-2">
+                    <i class="fas fa-newspaper text-purple-500 text-xl"></i>
+                    <h1 class="text-xl font-bold">myAInews</h1>
                 </div>
                 <div class="flex items-center space-x-4">
-                    <div class="text-sm text-gray-400">
-                        Next update in <span id="countdown" class="font-mono text-yellow-400 countdown">10:00</span>
+                    <div class="bg-gray-800 px-4 py-2 rounded-full flex items-center">
+                        <i class="fas fa-clock text-purple-400 mr-2"></i>
+                        <div>
+                            <span class="text-xs text-gray-400">Next update in</span>
+                            <div id="countdown" class="font-mono text-white"></div>
+                        </div>
                     </div>
-                    <button id="theme-toggle" class="p-2 rounded-full hover:bg-gray-700 focus:outline-none">
-                        <i class="fas fa-sun text-yellow-400"></i>
-                    </button>
+                    <div>
+                        <span id="status-indicator" class="flex h-3 w-3 relative">
+                            <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-purple-400 opacity-75"></span>
+                            <span class="relative inline-flex rounded-full h-3 w-3 bg-purple-500"></span>
+                        </span>
+                    </div>
                 </div>
             </div>
-            <p class="text-gray-400 mt-2">Real-time Israeli politics updates, refreshed every 10 minutes</p>
+            <p class="text-sm text-gray-400 mt-2">
+                Autonomous AI-powered updates on Israeli politics
+            </p>
         </header>
-        
-        <div class="relative bg-gray-800 rounded-lg shadow-xl overflow-hidden mb-6">
-            <div class="absolute top-0 left-0 right-0 bg-gray-700 px-4 py-2 flex items-center">
-                <div class="flex space-x-2 mr-2">
-                    <div class="w-3 h-3 bg-red-500 rounded-full"></div>
-                    <div class="w-3 h-3 bg-yellow-500 rounded-full"></div>
-                    <div class="w-3 h-3 bg-green-500 rounded-full"></div>
+
+        <!-- Chat Container -->
+        <div id="chat-container" class="chat-container flex-1 p-4 overflow-y-auto">
+            <div class="flex flex-col space-y-4" id="chat-messages">
+                <div class="message ai-message self-start p-3">
+                    <div>
+                        Welcome to myAInews! I'll provide you with updates on Israeli politics every 10 minutes. The first update is being prepared...
+                    </div>
+                    <div class="message-time">
+                        Just now
+                    </div>
                 </div>
-                <div class="text-sm font-medium text-center w-full">Israeli Politics - Live Chat</div>
-            </div>
-            
-            <div id="chat-container" class="p-4 pt-12 h-[500px] overflow-y-auto">
-                <div class="chat-bubble ai">
-                    <p class="mb-1">Hello! I'm your AI news assistant. I'll provide you with the latest updates on Israeli politics.</p>
-                    <div class="text-xs text-gray-500">Just now</div>
-                </div>
-                <div id="loading-indicator" class="chat-bubble ai py-3">
+                <div id="typing-indicator" class="message ai-message self-start p-3">
                     <div class="typing-indicator">
                         <span></span>
                         <span></span>
                         <span></span>
                     </div>
+                    <div class="message-time">
+                        Just now
+                    </div>
                 </div>
-                <!-- News messages will be added here by JavaScript -->
             </div>
         </div>
         
-        <div class="bg-gray-800 rounded-lg p-4 mb-6">
-            <h2 class="text-xl font-semibold text-blue-400 mb-3"><i class="fas fa-info-circle mr-2"></i>About</h2>
-            <p class="text-gray-300">This AI-powered news dashboard provides the latest updates on Israeli politics in a chat-style format. The content is automatically refreshed every 10 minutes to ensure you stay informed with the most recent developments.</p>
+        <div id="updating-overlay" class="updating-overlay hidden fixed inset-0 flex items-center justify-center flex-col">
+            <div class="text-2xl font-bold mb-4">Updating News</div>
+            <div class="w-16 h-16 border-4 border-purple-500 border-t-transparent rounded-full animate-spin"></div>
+            <div class="mt-4 text-gray-300">Fetching the latest Israeli politics updates...</div>
         </div>
-        
-        <footer class="text-center text-gray-500 text-sm py-4">
-            <p>Powered by NewsAPI and AI technology • <span id="current-year"></span></p>
-        </footer>
     </div>
-    
+
     <script>
-        // API Key for NewsAPI
+        // Constants
         const API_KEY = "330b7eb40246456dbf18361191ae93be";
+        const UPDATE_INTERVAL = 10 * 60 * 1000; // 10 minutes in milliseconds
+        const STORAGE_KEY = "myAInews_data";
         
-        // DOM Elements
-        const chatContainer = document.getElementById('chat-container');
-        const loadingIndicator = document.getElementById('loading-indicator');
+        // Elements
+        const chatMessages = document.getElementById('chat-messages');
+        const typingIndicator = document.getElementById('typing-indicator');
         const countdownEl = document.getElementById('countdown');
-        const themeToggle = document.getElementById('theme-toggle');
-        const currentYearEl = document.getElementById('current-year');
+        const chatContainer = document.getElementById('chat-container');
+        const updatingOverlay = document.getElementById('updating-overlay');
         
-        // Set current year
-        currentYearEl.textContent = new Date().getFullYear();
+        // State variables
+        let lastUpdateTime = null;
+        let nextUpdateTime = null;
+        let countdownInterval = null;
+        let updateTimeout = null;
+        let newsCache = [];
         
-        // Theme toggle functionality
-        themeToggle.addEventListener('click', () => {
-            document.documentElement.classList.toggle('dark');
-            const isDark = document.documentElement.classList.contains('dark');
+        // Initialize the app
+        function initApp() {
+            loadState();
+            calculateNextUpdate();
+            startCountdown();
             
-            if (isDark) {
-                themeToggle.innerHTML = '<i class="fas fa-sun text-yellow-400"></i>';
-                document.body.classList.add('bg-gray-900');
-                document.body.classList.remove('bg-gray-100');
+            // If it's first run or time for an update, fetch news
+            if (!lastUpdateTime || Date.now() >= nextUpdateTime) {
+                fetchNewsUpdates();
             } else {
-                themeToggle.innerHTML = '<i class="fas fa-moon text-gray-700"></i>';
-                document.body.classList.remove('bg-gray-900');
-                document.body.classList.add('bg-gray-100');
-                document.body.classList.add('text-gray-900');
-                document.body.classList.remove('text-white');
+                displayCachedNews();
             }
-        });
-        
-        // Time formatter
-        function formatTime(date) {
-            return new Intl.DateTimeFormat('en-US', {
-                hour: '2-digit',
-                minute: '2-digit',
-                hour12: true
-            }).format(date);
         }
         
-        // Date formatter
-        function formatDate(dateString) {
-            const date = new Date(dateString);
-            return new Intl.DateTimeFormat('en-US', {
-                month: 'short',
-                day: 'numeric',
-                year: 'numeric',
-                hour: '2-digit',
-                minute: '2-digit',
-                hour12: true
-            }).format(date);
+        // Load state from localStorage
+        function loadState() {
+            const savedState = localStorage.getItem(STORAGE_KEY);
+            if (savedState) {
+                const state = JSON.parse(savedState);
+                lastUpdateTime = state.lastUpdateTime;
+                newsCache = state.newsCache || [];
+            }
         }
         
-        // Create chat message
-        function createChatMessage(content, isAI = true, timestamp = null) {
-            const messageDiv = document.createElement('div');
-            messageDiv.className = `chat-bubble ${isAI ? 'ai' : 'news'}`;
+        // Save state to localStorage
+        function saveState() {
+            const state = {
+                lastUpdateTime,
+                newsCache
+            };
+            localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+        }
+        
+        // Calculate next update time
+        function calculateNextUpdate() {
+            if (!lastUpdateTime) {
+                // First time - schedule immediate update
+                nextUpdateTime = Date.now();
+            } else {
+                // Calculate next update time based on last update
+                const timeSinceLastUpdate = Date.now() - lastUpdateTime;
+                const timeSinceLastInterval = timeSinceLastUpdate % UPDATE_INTERVAL;
+                const timeToNextUpdate = UPDATE_INTERVAL - timeSinceLastInterval;
+                nextUpdateTime = Date.now() + timeToNextUpdate;
+            }
+        }
+        
+        // Start countdown timer
+        function startCountdown() {
+            if (countdownInterval) clearInterval(countdownInterval);
+            if (updateTimeout) clearTimeout(updateTimeout);
             
-            // Create main content
-            const contentP = document.createElement('p');
-            contentP.className = 'mb-1';
-            contentP.innerHTML = content;
-            messageDiv.appendChild(contentP);
+            updateCountdown();
+            countdownInterval = setInterval(updateCountdown, 1000);
             
-            // Add timestamp
-            const timeDiv = document.createElement('div');
-            timeDiv.className = 'text-xs text-gray-500';
-            timeDiv.textContent = timestamp ? formatDate(timestamp) : formatTime(new Date());
-            messageDiv.appendChild(timeDiv);
+            // Schedule the next update
+            const timeToNextUpdate = nextUpdateTime - Date.now();
+            updateTimeout = setTimeout(fetchNewsUpdates, timeToNextUpdate);
+        }
+        
+        // Update countdown display
+        function updateCountdown() {
+            const now = Date.now();
+            const timeLeft = Math.max(0, nextUpdateTime - now);
             
-            return messageDiv;
+            if (timeLeft === 0) {
+                countdownEl.innerHTML = "Updating...";
+                return;
+            }
+            
+            const minutes = Math.floor(timeLeft / 60000);
+            const seconds = Math.floor((timeLeft % 60000) / 1000);
+            countdownEl.innerHTML = `${minutes}:${seconds.toString().padStart(2, '0')}`;
         }
         
         // Fetch news from NewsAPI
-        async function fetchIsraeliPoliticsNews() {
-            try {
-                loadingIndicator.style.display = 'block';
-                
-                // Make two requests to get comprehensive coverage
-                const response1 = await fetch(`https://newsapi.org/v2/everything?q=Israel+politics+government&language=en&sortBy=publishedAt&pageSize=5&apiKey=${API_KEY}`);
-                const data1 = await response1.json();
-                
-                const response2 = await fetch(`https://newsapi.org/v2/top-headlines?country=il&category=politics&pageSize=5&apiKey=${API_KEY}`);
-                const data2 = await response2.json();
-                
-                // Combine results and sort by date
-                let articles = [];
-                if (data1.status === 'ok' && data1.articles) {
-                    articles = articles.concat(data1.articles);
-                }
-                if (data2.status === 'ok' && data2.articles) {
-                    articles = articles.concat(data2.articles);
-                }
-                
-                // Sort by published date (newest first)
-                articles.sort((a, b) => new Date(b.publishedAt) - new Date(a.publishedAt));
-                
-                // Remove duplicates
-                const uniqueArticles = [];
-                const titles = new Set();
-                
-                articles.forEach(article => {
-                    if (!titles.has(article.title) && article.title && article.description) {
-                        titles.add(article.title);
-                        uniqueArticles.push(article);
+        function fetchNewsUpdates() {
+            showUpdatingOverlay();
+            
+            // Show typing indicator
+            typingIndicator.style.display = 'flex';
+            
+            const endpoint = `https://newsapi.org/v2/everything?q=israel+politics&language=en&sortBy=publishedAt&apiKey=${API_KEY}`;
+            
+            fetch(endpoint)
+                .then(response => response.json())
+                .then(data => {
+                    if (data.status === "ok" && data.articles && data.articles.length > 0) {
+                        processNewsData(data.articles);
+                    } else {
+                        addAIMessage("I couldn't find any recent news on Israeli politics. I'll try again in 10 minutes.");
                     }
-                });
-                
-                // Success message
-                chatContainer.insertBefore(
-                    createChatMessage(`I've found ${uniqueArticles.length} recent updates on Israeli politics. Here are the latest developments:`),
-                    loadingIndicator
-                );
-                
-                // Add news articles as chat messages
-                uniqueArticles.slice(0, 8).forEach(article => {
-                    const content = `
-                        <strong>${article.title}</strong>
-                        <p class="my-1">${article.description}</p>
-                        ${article.source && article.source.name ? `<div class="text-xs mt-1">Source: ${article.source.name}</div>` : ''}
-                        ${article.url ? `<a href="${article.url}" target="_blank" class="text-xs text-blue-300 hover:underline">Read full article</a>` : ''}
-                    `;
+                })
+                .catch(error => {
+                    console.error("Error fetching news:", error);
+                    addAIMessage("Sorry, I encountered an error while fetching the latest news. I'll try again in 10 minutes.");
+                })
+                .finally(() => {
+                    // Update state
+                    lastUpdateTime = Date.now();
+                    calculateNextUpdate();
+                    startCountdown();
+                    saveState();
                     
-                    chatContainer.insertBefore(
-                        createChatMessage(content, false, article.publishedAt),
-                        loadingIndicator
-                    );
+                    // Hide typing indicator and updating overlay
+                    setTimeout(() => {
+                        typingIndicator.style.display = 'none';
+                        hideUpdatingOverlay();
+                    }, 1000);
                 });
-                
-                // Summary message
-                chatContainer.insertBefore(
-                    createChatMessage("That's all for now. I'll check for new updates in <strong>10 minutes</strong>. Stay tuned!"),
-                    loadingIndicator
-                );
-                
-                // Scroll to bottom
+        }
+        
+        // Process and display news data
+        function processNewsData(articles) {
+            // Filter to just get recent and relevant articles (last 24 hours)
+            const oneDayAgo = new Date();
+            oneDayAgo.setDate(oneDayAgo.getDate() - 1);
+            
+            let relevantArticles = articles
+                .filter(article => new Date(article.publishedAt) > oneDayAgo)
+                .filter(article => {
+                    // Check if the article is about Israeli politics
+                    const title = article.title.toLowerCase();
+                    const description = article.description ? article.description.toLowerCase() : '';
+                    const keywords = ['israel', 'israeli', 'netanyahu', 'knesset', 'gaza', 'palestine', 
+                                     'tel aviv', 'jerusalem', 'west bank', 'idf', 'bennett', 'lapid'];
+                    
+                    return keywords.some(keyword => title.includes(keyword) || description.includes(keyword));
+                })
+                .slice(0, 6); // Limit to 6 articles
+            
+            if (relevantArticles.length === 0) {
+                relevantArticles = articles.slice(0, 5); // Fallback to top 5 if no relevant news
+            }
+            
+            // Update cache
+            newsCache = relevantArticles;
+            saveState();
+            
+            // Create a summary
+            addAIMessage(createNewsSummary(relevantArticles));
+            
+            // Add individual news items
+            setTimeout(() => {
+                relevantArticles.forEach((article, index) => {
+                    setTimeout(() => {
+                        addAIMessage(formatNewsItem(article), article.source.name);
+                    }, index * 800); // Stagger the messages
+                });
+            }, 1000);
+        }
+        
+        // Display cached news
+        function displayCachedNews() {
+            if (newsCache.length === 0) {
+                fetchNewsUpdates();
+                return;
+            }
+            
+            // Add a welcome back message
+            if (lastUpdateTime) {
+                const lastUpdateDate = new Date(lastUpdateTime);
+                addAIMessage(`Welcome back! Here are the latest Israeli politics updates from my last refresh at ${lastUpdateDate.toLocaleTimeString()}.`);
+            }
+            
+            // Display cached news items
+            newsCache.forEach((article, index) => {
+                setTimeout(() => {
+                    addAIMessage(formatNewsItem(article), article.source.name);
+                }, index * 600);
+            });
+            
+            // Hide typing indicator
+            setTimeout(() => {
+                typingIndicator.style.display = 'none';
+            }, newsCache.length * 600 + 500);
+        }
+        
+        // Create a summary of the news
+        function createNewsSummary(articles) {
+            const now = new Date();
+            let summary = `Here's your ${now.getHours() >= 12 ? 'afternoon' : 'morning'} update on Israeli politics as of ${now.toLocaleTimeString()}.\n\n`;
+            
+            if (articles.length === 0) {
+                return summary + "I couldn't find any significant recent developments. I'll continue monitoring for updates.";
+            }
+            
+            summary += "Top highlights:\n";
+            
+            // Extract main themes
+            const themes = new Set();
+            articles.forEach(article => {
+                const title = article.title.toLowerCase();
+                if (title.includes('gaza') || title.includes('hamas')) themes.add('Gaza conflict');
+                if (title.includes('netanyahu')) themes.add('Netanyahu government');
+                if (title.includes('iran') || title.includes('hezbollah')) themes.add('Regional tensions');
+                if (title.includes('knesset') || title.includes('coalition')) themes.add('Domestic politics');
+            });
+            
+            if (themes.size > 0) {
+                summary += "Main focus areas: " + Array.from(themes).join(', ') + ".\n\n";
+            }
+            
+            return summary + "I'll share the details in separate messages below.";
+        }
+        
+        // Format a news article for display
+        function formatNewsItem(article) {
+            let message = `📰 **${article.title}**\n\n`;
+            
+            if (article.description) {
+                message += `${article.description}\n\n`;
+            }
+            
+            // Add publication time
+            const publishDate = new Date(article.publishedAt);
+            message += `Published: ${publishDate.toLocaleString()}\n`;
+            
+            // Add link
+            if (article.url) {
+                message += `[Read more](${article.url})`;
+            }
+            
+            return message;
+        }
+        
+        // Add an AI message to the chat
+        function addAIMessage(text, source = null) {
+            // Hide typing indicator temporarily
+            typingIndicator.style.display = 'none';
+            
+            const messageDiv = document.createElement('div');
+            messageDiv.className = 'message ai-message self-start p-3';
+            
+            // Process markdown-like formatting
+            let formattedText = text
+                .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+                .replace(/\[(.*?)\]\((.*?)\)/g, '<a href="$2" target="_blank" class="text-purple-400 hover:underline">$1</a>')
+                .replace(/\n/g, '<br>');
+            
+            messageDiv.innerHTML = `
+                <div>${formattedText}</div>
+                ${source ? `<div class="news-source">${source}</div>` : ''}
+                <div class="message-time">${new Date().toLocaleTimeString()}</div>
+            `;
+            
+            chatMessages.insertBefore(messageDiv, typingIndicator);
+            
+            // Show typing indicator again after a short delay
+            setTimeout(() => {
+                typingIndicator.style.display = 'flex';
                 chatContainer.scrollTop = chatContainer.scrollHeight;
-            } catch (error) {
-                console.error('Error fetching news:', error);
-                chatContainer.insertBefore(
-                    createChatMessage(`I encountered an error while fetching news updates. This might be due to API limits or connection issues. I'll try again later.`),
-                    loadingIndicator
-                );
-            } finally {
-                loadingIndicator.style.display = 'none';
-            }
+            }, 500);
+            
+            chatContainer.scrollTop = chatContainer.scrollHeight;
         }
         
-        // Countdown timer
-        let timeLeft = 10 * 60; // 10 minutes in seconds
-        
-        function updateCountdown() {
-            const minutes = Math.floor(timeLeft / 60);
-            const seconds = timeLeft % 60;
-            countdownEl.textContent = `${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
-            
-            if (timeLeft === 0) {
-                // Clear old news messages
-                const newsMessages = document.querySelectorAll('.chat-bubble.news');
-                newsMessages.forEach(msg => msg.remove());
-                
-                // Remove all but the first AI message
-                const aiMessages = document.querySelectorAll('.chat-bubble.ai');
-                aiMessages.forEach((msg, index) => {
-                    if (index > 0) msg.remove();
-                });
-                
-                // Add a refreshing message
-                chatContainer.insertBefore(
-                    createChatMessage("Refreshing news updates now..."),
-                    loadingIndicator
-                );
-                
-                // Fetch fresh news
-                fetchIsraeliPoliticsNews();
-                
-                // Reset countdown
-                timeLeft = 10 * 60;
-            } else {
-                timeLeft--;
-            }
+        function showUpdatingOverlay() {
+            updatingOverlay.classList.remove('hidden');
         }
         
-        // Initialize
-        document.addEventListener('DOMContentLoaded', () => {
-            // Start countdown
-            setInterval(updateCountdown, 1000);
-            
-            // Fetch initial news
-            fetchIsraeliPoliticsNews();
-        });
+        function hideUpdatingOverlay() {
+            updatingOverlay.classList.add('hidden');
+        }
+        
+        // Initialize the app when the page loads
+        window.addEventListener('load', initApp);
     </script>
 </body>
 </html>
