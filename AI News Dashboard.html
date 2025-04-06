@@ -1,767 +1,780 @@
 <!DOCTYPE html>
-<!-- saved from url=(0082)https://page.genspark.site/page/toolu_01AsWTdMV7DqLqtrrmMJfUmR/news_dashboard.html -->
-<html lang="en"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-    
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AI News Dashboard</title>
-    <link href="./AI News Dashboard_files/tailwind.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="./AI News Dashboard_files/all.min.css">
+    <title>Global News Dashboard</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.4.0/css/all.min.css">
     <style>
+        :root {
+            --primary-color: #3b82f6;
+            --secondary-color: #e5e7eb;
+            --text-color: #1f2937;
+            --background-color: #ffffff;
+            --card-bg: #f3f4f6;
+            --border-color: #d1d5db;
+            --hover-color: #eff6ff;
+        }
+
+        .dark-mode {
+            --primary-color: #3b82f6;
+            --secondary-color: #374151;
+            --text-color: #e5e7eb;
+            --background-color: #111827;
+            --card-bg: #1f2937;
+            --border-color: #374151;
+            --hover-color: #1e3a8a;
+        }
+
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background-color: #f0f2f5;
+            background-color: var(--background-color);
+            color: var(--text-color);
+            transition: background-color 0.3s, color 0.3s;
         }
-        .news-container {
-            height: calc(100vh - 180px);
-            overflow-y: auto;
-        }
+
         .tab-content {
             display: none;
         }
+
         .tab-content.active {
             display: flex;
         }
-        .chat-message {
-            margin-bottom: 10px;
-            padding: 10px;
-            border-radius: 10px;
-            max-width: 80%;
+
+        .news-item {
+            border-radius: 8px;
+            margin-bottom: 12px;
+            padding: 12px;
             animation: fadeIn 0.5s;
+            border: 1px solid var(--border-color);
+            background-color: var(--card-bg);
         }
-        .regular-news {
-            background-color: #e3f2fd;
-            border-left: 4px solid #2196f3;
-            color: #0d47a1;
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
         }
-        .extraordinary-news {
-            background-color: #ffebee;
-            border-left: 4px solid #f44336;
-            color: #b71c1c;
-        }
-        .deepstate-news {
-            background-color: #f3e5f5;
-            border-left: 4px solid #9c27b0;
-            color: #4a148c;
-        }
-        .highrank-news {
-            background-color: #ffffff;
-            border-left: 4px solid #000000;
-            color: #000000;
-            font-weight: bold;
-        }
-        .cartoon-container {
+
+        .chat-bubble {
             position: relative;
-            margin-bottom: 20px;
-            animation: slideIn 0.5s;
+            border-radius: 18px;
+            padding: 12px 16px;
+            max-width: 80%;
+            margin-bottom: 8px;
+            background-color: var(--card-bg);
+            box-shadow: 0 1px 2px rgba(0,0,0,0.1);
         }
+
+        .chat-bubble::after {
+            content: '';
+            position: absolute;
+            bottom: -6px;
+            left: 10px;
+            border-width: 8px 8px 0;
+            border-style: solid;
+            border-color: var(--card-bg) transparent transparent;
+        }
+
+        .cartoon-container {
+            border-radius: 12px;
+            padding: 16px;
+            margin-bottom: 16px;
+            background-color: var(--card-bg);
+            border: 1px solid var(--border-color);
+            transition: all 0.3s;
+        }
+
+        .cartoon-container:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 15px -3px rgba(0,0,0,0.1);
+        }
+
         .cartoon-image {
-            width: 150px;
-            height: 150px;
+            width: 120px;
+            height: 120px;
             border-radius: 50%;
-            background-color: #ddd;
+            background-color: #cbd5e1;
             display: flex;
             align-items: center;
             justify-content: center;
+            margin-bottom: 12px;
             overflow: hidden;
-            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
         }
+
         .speech-bubble {
             position: relative;
-            background: #ffffff;
-            border-radius: .4em;
-            padding: 15px;
+            background-color: white;
+            border-radius: 16px;
+            padding: 12px;
             margin-top: 10px;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
         }
-        .speech-bubble:after {
-            content: '';
+
+        .speech-bubble::before {
+            content: "";
             position: absolute;
-            top: 0;
-            left: 20px;
-            width: 0;
-            height: 0;
-            border: 10px solid transparent;
-            border-bottom-color: #ffffff;
-            border-top: 0;
-            margin-left: -10px;
-            margin-top: -10px;
+            top: -10px;
+            left: 50%;
+            transform: translateX(-50%);
+            border-width: 0 10px 10px;
+            border-style: solid;
+            border-color: white transparent;
         }
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(10px); }
-            to { opacity: 1; transform: translateY(0); }
+
+        .blue-news {
+            border-left: 5px solid #3b82f6;
         }
-        @keyframes slideIn {
-            from { opacity: 0; transform: translateX(20px); }
-            to { opacity: 1; transform: translateX(0); }
+
+        .red-news {
+            border-left: 5px solid #ef4444;
         }
-        .progress-bar {
-            height: 6px;
-            background-color: #e0e0e0;
-            border-radius: 3px;
-            overflow: hidden;
+
+        .purple-news {
+            border-left: 5px solid #8b5cf6;
         }
-        .progress-value {
-            height: 100%;
-            background-color: #4CAF50;
-            width: 0%;
-            transition: width 1s linear;
+
+        .white-news {
+            border-left: 5px solid #f9fafb;
+            border-width: 5px;
         }
-        .countdown {
-            font-size: 1.2rem;
-            font-weight: bold;
-            text-align: center;
-            margin: 10px 0;
+
+        .news-tag {
+            display: inline-block;
+            padding: 2px 8px;
+            border-radius: 12px;
+            font-size: 0.75rem;
+            margin-right: 8px;
         }
-        .ai-status {
-            background-color: #e8f5e9;
+
+        .slider-container {
+            margin: 20px 0;
+            background-color: var(--card-bg);
             border-radius: 8px;
-            padding: 15px;
-            margin: 10px 0;
-            border-left: 4px solid #4CAF50;
+            padding: 16px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
         }
-        .filter-btn {
-            padding: 5px 12px;
-            border-radius: 15px;
-            margin-right: 5px;
+
+        .slider {
+            -webkit-appearance: none;
+            width: 100%;
+            height: 8px;
+            border-radius: 4px;
+            background: linear-gradient(to right, #3b82f6, #8b5cf6);
+            outline: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .slider::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background: #fff;
             cursor: pointer;
-            font-size: 0.8rem;
-            transition: all 0.3s;
+            border: 2px solid #3b82f6;
         }
+
+        .slider::-moz-range-thumb {
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background: #fff;
+            cursor: pointer;
+            border: 2px solid #3b82f6;
+        }
+
+        .filter-btn {
+            margin-right: 8px;
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 0.875rem;
+            cursor: pointer;
+            transition: all 0.3s;
+            border: 2px solid transparent;
+        }
+
         .filter-btn.active {
             font-weight: bold;
         }
-        .people-vs-deepstate {
-            height: 120px;
-            background: linear-gradient(to right, #2196f3 30%, #9c27b0 70%);
-            border-radius: 10px;
-            position: relative;
-            margin: 20px 0;
-            overflow: hidden;
-        }
-        .people-side, .deepstate-side {
-            position: absolute;
-            top: 0;
-            height: 100%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: white;
-            font-weight: bold;
-            padding: 0 20px;
-        }
-        .people-side {
-            left: 0;
-            width: 30%;
-            background-color: rgba(33, 150, 243, 0.7);
-        }
-        .deepstate-side {
-            right: 0;
-            width: 70%;
-            background-color: rgba(156, 39, 176, 0.7);
-        }
-        .divider {
-            position: absolute;
-            top: 0;
-            left: 30%;
-            height: 100%;
-            width: 3px;
-            background-color: #fff;
-            box-shadow: 0 0 10px rgba(255,255,255,0.8);
-        }
-        .tooltip {
+
+        .toggle-switch {
             position: relative;
             display: inline-block;
+            width: 48px;
+            height: 24px;
         }
-        .tooltip .tooltiptext {
-            visibility: hidden;
-            width: 120px;
-            background-color: #555;
-            color: #fff;
-            text-align: center;
-            border-radius: 6px;
-            padding: 5px;
-            position: absolute;
-            z-index: 1;
-            bottom: 125%;
-            left: 50%;
-            margin-left: -60px;
+
+        .toggle-switch input {
             opacity: 0;
-            transition: opacity 0.3s;
+            width: 0;
+            height: 0;
         }
-        .tooltip:hover .tooltiptext {
-            visibility: visible;
-            opacity: 1;
+
+        .toggle-slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: #ccc;
+            transition: .4s;
+            border-radius: 24px;
+        }
+
+        .toggle-slider:before {
+            position: absolute;
+            content: "";
+            height: 18px;
+            width: 18px;
+            left: 3px;
+            bottom: 3px;
+            background-color: white;
+            transition: .4s;
+            border-radius: 50%;
+        }
+
+        input:checked + .toggle-slider {
+            background-color: #3b82f6;
+        }
+
+        input:checked + .toggle-slider:before {
+            transform: translateX(24px);
+        }
+
+        ::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: var(--background-color);
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background-color: var(--border-color);
+            border-radius: 6px;
         }
     </style>
 </head>
-<body class="min-h-screen">
-    <header class="bg-gray-800 text-white p-4">
-        <div class="container mx-auto flex justify-between items-center">
-            <h1 class="text-2xl font-bold">AI News Dashboard</h1>
+<body>
+    <div class="container mx-auto px-4 py-8 max-w-6xl">
+        <header class="flex justify-between items-center mb-8">
+            <h1 class="text-3xl font-bold">Global News Dashboard</h1>
             <div class="flex items-center">
-                <div class="mr-4">
-                    <span class="text-green-400">●</span> AI Active
-                </div>
-                <div class="countdown bg-gray-700 px-3 py-1 rounded-full">
-                    Next update in: <span id="timer">59:52</span>
-                </div>
+                <span class="mr-2">Dark Mode</span>
+                <label class="toggle-switch">
+                    <input type="checkbox" id="darkModeToggle">
+                    <span class="toggle-slider"></span>
+                </label>
             </div>
-        </div>
-    </header>
+        </header>
 
-    <div class="container mx-auto p-4">
-        <div class="ai-status">
-            <div class="flex items-center">
-                <div class="animate-pulse mr-3">
-                    <i class="fas fa-robot text-2xl text-green-600"></i>
+        <div class="mb-6 p-4 rounded-lg shadow-md" style="background-color: var(--card-bg);">
+            <div class="flex justify-between items-center">
+                <div>
+                    <p class="text-sm">Next update in:</p>
+                    <p id="countdown-timer" class="text-2xl font-mono font-bold">60:00</p>
                 </div>
                 <div>
-                    <h3 class="font-bold">AI News Collector Status</h3>
-                    <p id="ai-message">Actively monitoring global news sources. Last update: <span id="last-update">Just now</span></p>
-                </div>
-            </div>
-            <div class="mt-2">
-                <div class="progress-bar">
-                    <div id="progress-value" class="progress-value" style="width: 0.222222%;"></div>
+                    <p class="text-sm">AI Web Crawler Status:</p>
+                    <p class="text-green-500 font-semibold">Active <i class="fas fa-circle-notch fa-spin ml-1"></i></p>
                 </div>
             </div>
         </div>
 
-        <!-- Tab Navigation -->
-        <div class="flex border-b border-gray-200 mb-4">
-            <button class="tab-btn px-4 py-2 font-medium text-lg focus:outline-none active hover:bg-gray-100 hover:text-gray-900 focus:text-gray-900 border-b-2 border-blue-500 text-blue-600" data-tab="israel">
-                <i class="fas fa-flag mr-2"></i> Israel
-            </button>
-            <button class="tab-btn px-4 py-2 font-medium text-lg focus:outline-none hover:bg-gray-100 hover:text-gray-900 focus:text-gray-900" data-tab="usa">
-                <i class="fas fa-flag-usa mr-2"></i> USA
-            </button>
-            <button class="tab-btn px-4 py-2 font-medium text-lg focus:outline-none hover:bg-gray-100 hover:text-gray-900 focus:text-gray-900" data-tab="international">
-                <i class="fas fa-globe-americas mr-2"></i> International
-            </button>
+        <div class="mb-6">
+            <div class="flex border-b" style="border-color: var(--border-color);">
+                <button id="tab-israel" class="tab-btn py-2 px-4 font-semibold" onclick="changeTab('israel')">Israel</button>
+                <button id="tab-usa" class="tab-btn py-2 px-4 font-semibold" onclick="changeTab('usa')">USA</button>
+                <button id="tab-international" class="tab-btn py-2 px-4 font-semibold" onclick="changeTab('international')">International</button>
+            </div>
         </div>
 
-        <!-- Filters -->
-        <div class="mb-4 flex flex-wrap items-center">
-            <span class="mr-2 font-bold">Filters:</span>
-            <button class="filter-btn bg-blue-100 text-blue-800 border border-blue-300 active" data-color="regular">
-                Regular News
-            </button>
-            <button class="filter-btn bg-red-100 text-red-800 border border-red-300 active" data-color="extraordinary">
-                Extraordinary
-            </button>
-            <button class="filter-btn bg-purple-100 text-purple-800 border border-purple-300 active" data-color="deepstate">
-                Deep State
-            </button>
-            <button class="filter-btn bg-white text-gray-800 border border-gray-300 active" data-color="highrank">
-                High-Rank Officials
-            </button>
-            <button class="filter-btn bg-gray-200 text-gray-800 border border-gray-300 ml-2 active" data-color="all">
-                Show All
-            </button>
-        </div>
-
-        <!-- Tab Content -->
-        <div id="israel-tab" class="tab-content active">
-            <!-- People vs Deep State Slide -->
-            <div class="people-vs-deepstate mb-6">
-                <div class="people-side">People 30%</div>
-                <div class="divider"></div>
-                <div class="deepstate-side">Deep State 70%</div>
+        <!-- Israel Tab -->
+        <div id="israel-content" class="tab-content active">
+            <div class="flex flex-col w-full md:flex-row">
+                <!-- Filter Controls -->
+                <div class="w-full mb-4 flex flex-wrap gap-2" style="background-color: var(--card-bg); padding: 10px; border-radius: 8px;">
+                    <span class="text-sm font-semibold mr-2 flex items-center">Filter by:</span>
+                    <button class="filter-btn active blue-filter" style="background-color: #dbeafe; color: #1e40af;" data-color="blue" onclick="toggleFilter('israel', 'blue')">Regular</button>
+                    <button class="filter-btn active red-filter" style="background-color: #fee2e2; color: #b91c1c;" data-color="red" onclick="toggleFilter('israel', 'red')">Extraordinary</button>
+                    <button class="filter-btn active purple-filter" style="background-color: #ede9fe; color: #5b21b6;" data-color="purple" onclick="toggleFilter('israel', 'purple')">Deep State</button>
+                    <button class="filter-btn active white-filter" style="background-color: #f9fafb; color: #1f2937;" data-color="white" onclick="toggleFilter('israel', 'white')">High Officials</button>
+                </div>
             </div>
             
-            <div class="flex flex-col md:flex-row">
-                <!-- Left Side: Chat Style News -->
-                <div class="w-full md:w-1/2 p-4 bg-white rounded-lg shadow-md mr-0 md:mr-4 mb-4 md:mb-0">
+            <div class="flex flex-col md:flex-row gap-4">
+                <!-- Left column: Chat-style news -->
+                <div class="w-full md:w-1/2 p-4 rounded-lg shadow-md" style="background-color: var(--card-bg); max-height: 600px; overflow-y: auto;">
                     <h2 class="text-xl font-bold mb-4">Political Updates</h2>
-                    <div class="news-container" id="israel-news">
-                        <div class="chat-message regular-news">
-                            <p class="text-sm text-gray-500 mb-1">Today, 10:30 AM</p>
-                            <p>Israel's parliament passes new budget allocation for defense spending.</p>
-                        </div>
-                        <div class="chat-message extraordinary-news">
-                            <p class="text-sm text-gray-500 mb-1">Today, 9:15 AM</p>
-                            <p>Surprise diplomatic breakthrough: Israel and Lebanon agree to maritime border talks.</p>
-                        </div>
-                        <div class="chat-message deepstate-news">
-                            <p class="text-sm text-gray-500 mb-1">Yesterday, 8:40 PM</p>
-                            <p>Intelligence agencies restructuring leadership positions without public announcement.</p>
-                        </div>
-                        <div class="chat-message highrank-news">
-                            <p class="text-sm text-gray-500 mb-1">Yesterday, 3:20 PM</p>
-                            <p>Prime Minister makes unscheduled visit to military headquarters amid rising tensions.</p>
-                        </div>
+                    <div id="israel-news-feed" class="space-y-4">
+                        <p class="text-gray-500 text-center italic">Loading news data...</p>
                     </div>
                 </div>
                 
-                <!-- Right Side: Cartoon Representations -->
-                <div class="w-full md:w-1/2 p-4 bg-white rounded-lg shadow-md">
+                <!-- Right column: Cartoon representations -->
+                <div class="w-full md:w-1/2 p-4 rounded-lg shadow-md" style="background-color: var(--card-bg); max-height: 600px; overflow-y: auto;">
                     <h2 class="text-xl font-bold mb-4">Political Figures</h2>
-                    <div class="news-container" id="israel-cartoons">
-                        <div class="cartoon-container regular-news">
-                            <div class="flex">
-                                <div class="cartoon-image">
-                                    <i class="fas fa-user-tie text-6xl text-gray-500"></i>
-                                </div>
-                                <div class="ml-4 flex-1">
-                                    <h3 class="font-bold">Finance Minister</h3>
-                                    <div class="speech-bubble">
-                                        "Our new budget prioritizes defense while maintaining social services. This balanced approach ensures our national security."
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="cartoon-container extraordinary-news">
-                            <div class="flex">
-                                <div class="cartoon-image">
-                                    <i class="fas fa-user-tie text-6xl text-gray-500"></i>
-                                </div>
-                                <div class="ml-4 flex-1">
-                                    <h3 class="font-bold">Foreign Minister</h3>
-                                    <div class="speech-bubble">
-                                        "Today's agreement with Lebanon marks a historic step toward regional stability. The negotiations were conducted in secret for months."
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="cartoon-container deepstate-news">
-                            <div class="flex">
-                                <div class="cartoon-image">
-                                    <i class="fas fa-user-secret text-6xl text-gray-500"></i>
-                                </div>
-                                <div class="ml-4 flex-1">
-                                    <h3 class="font-bold">Intelligence Director</h3>
-                                    <div class="speech-bubble">
-                                        "The reorganization is purely administrative. There's no reason for public concern about changes in our intelligence community."
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
+                    <div id="israel-cartoons" class="space-y-4">
+                        <p class="text-gray-500 text-center italic">Loading cartoon representations...</p>
                     </div>
+                </div>
+            </div>
+            
+            <!-- People vs Deep State Slider -->
+            <div class="slider-container mt-6">
+                <h3 class="font-semibold mb-2">People vs Deep State Influence</h3>
+                <input type="range" min="0" max="100" value="50" class="slider" id="israel-slider">
+                <div class="flex justify-between mt-2">
+                    <span>People-Driven</span>
+                    <span>Deep State Influence</span>
                 </div>
             </div>
         </div>
 
-        <div id="usa-tab" class="tab-content">
-            <!-- People vs Deep State Slide -->
-            <div class="people-vs-deepstate mb-6">
-                <div class="people-side">People 25%</div>
-                <div class="divider" style="left: 25%"></div>
-                <div class="deepstate-side" style="width: 75%">Deep State 75%</div>
+        <!-- USA Tab -->
+        <div id="usa-content" class="tab-content">
+            <div class="flex flex-col w-full md:flex-row">
+                <!-- Filter Controls -->
+                <div class="w-full mb-4 flex flex-wrap gap-2" style="background-color: var(--card-bg); padding: 10px; border-radius: 8px;">
+                    <span class="text-sm font-semibold mr-2 flex items-center">Filter by:</span>
+                    <button class="filter-btn active blue-filter" style="background-color: #dbeafe; color: #1e40af;" data-color="blue" onclick="toggleFilter('usa', 'blue')">Regular</button>
+                    <button class="filter-btn active red-filter" style="background-color: #fee2e2; color: #b91c1c;" data-color="red" onclick="toggleFilter('usa', 'red')">Extraordinary</button>
+                    <button class="filter-btn active purple-filter" style="background-color: #ede9fe; color: #5b21b6;" data-color="purple" onclick="toggleFilter('usa', 'purple')">Deep State</button>
+                    <button class="filter-btn active white-filter" style="background-color: #f9fafb; color: #1f2937;" data-color="white" onclick="toggleFilter('usa', 'white')">High Officials</button>
+                </div>
             </div>
             
-            <div class="flex flex-col md:flex-row">
-                <!-- Left Side: Chat Style News -->
-                <div class="w-full md:w-1/2 p-4 bg-white rounded-lg shadow-md mr-0 md:mr-4 mb-4 md:mb-0">
+            <div class="flex flex-col md:flex-row gap-4">
+                <!-- Left column: Chat-style news -->
+                <div class="w-full md:w-1/2 p-4 rounded-lg shadow-md" style="background-color: var(--card-bg); max-height: 600px; overflow-y: auto;">
                     <h2 class="text-xl font-bold mb-4">Political Updates</h2>
-                    <div class="news-container" id="usa-news">
-                        <div class="chat-message regular-news">
-                            <p class="text-sm text-gray-500 mb-1">Today, 11:45 AM</p>
-                            <p>Congress passes infrastructure bill after months of negotiation.</p>
-                        </div>
-                        <div class="chat-message extraordinary-news">
-                            <p class="text-sm text-gray-500 mb-1">Today, 8:30 AM</p>
-                            <p>Supreme Court makes unexpected ruling on major tech antitrust case.</p>
-                        </div>
-                        <div class="chat-message deepstate-news">
-                            <p class="text-sm text-gray-500 mb-1">Yesterday, 9:15 PM</p>
-                            <p>Classified Pentagon program funding increased through obscure budget amendment.</p>
-                        </div>
-                        <div class="chat-message highrank-news">
-                            <p class="text-sm text-gray-500 mb-1">Yesterday, 4:30 PM</p>
-                            <p>President announces new executive order on climate initiatives during press conference.</p>
-                        </div>
+                    <div id="usa-news-feed" class="space-y-4">
+                        <p class="text-gray-500 text-center italic">Loading news data...</p>
                     </div>
                 </div>
                 
-                <!-- Right Side: Cartoon Representations -->
-                <div class="w-full md:w-1/2 p-4 bg-white rounded-lg shadow-md">
+                <!-- Right column: Cartoon representations -->
+                <div class="w-full md:w-1/2 p-4 rounded-lg shadow-md" style="background-color: var(--card-bg); max-height: 600px; overflow-y: auto;">
                     <h2 class="text-xl font-bold mb-4">Political Figures</h2>
-                    <div class="news-container" id="usa-cartoons">
-                        <div class="cartoon-container regular-news">
-                            <div class="flex">
-                                <div class="cartoon-image">
-                                    <i class="fas fa-user-tie text-6xl text-gray-500"></i>
-                                </div>
-                                <div class="ml-4 flex-1">
-                                    <h3 class="font-bold">Speaker of the House</h3>
-                                    <div class="speech-bubble">
-                                        "This bipartisan infrastructure bill will create jobs and rebuild America's crumbling roads and bridges."
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="cartoon-container extraordinary-news">
-                            <div class="flex">
-                                <div class="cartoon-image">
-                                    <i class="fas fa-balance-scale text-6xl text-gray-500"></i>
-                                </div>
-                                <div class="ml-4 flex-1">
-                                    <h3 class="font-bold">Supreme Court Justice</h3>
-                                    <div class="speech-bubble">
-                                        "Our ruling today redefines how we approach monopolistic behavior in the digital age. This will reshape tech regulation moving forward."
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="cartoon-container deepstate-news">
-                            <div class="flex">
-                                <div class="cartoon-image">
-                                    <i class="fas fa-user-secret text-6xl text-gray-500"></i>
-                                </div>
-                                <div class="ml-4 flex-1">
-                                    <h3 class="font-bold">Defense Department Official</h3>
-                                    <div class="speech-bubble">
-                                        "The budget adjustment simply reflects our evolving national security needs. The specific allocations remain classified for security reasons."
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
+                    <div id="usa-cartoons" class="space-y-4">
+                        <p class="text-gray-500 text-center italic">Loading cartoon representations...</p>
                     </div>
+                </div>
+            </div>
+            
+            <!-- People vs Deep State Slider -->
+            <div class="slider-container mt-6">
+                <h3 class="font-semibold mb-2">People vs Deep State Influence</h3>
+                <input type="range" min="0" max="100" value="50" class="slider" id="usa-slider">
+                <div class="flex justify-between mt-2">
+                    <span>People-Driven</span>
+                    <span>Deep State Influence</span>
                 </div>
             </div>
         </div>
 
-        <div id="international-tab" class="tab-content">
-            <!-- People vs Deep State Slide -->
-            <div class="people-vs-deepstate mb-6">
-                <div class="people-side" style="width: 40%">People 40%</div>
-                <div class="divider" style="left: 40%"></div>
-                <div class="deepstate-side" style="width: 60%">Deep State 60%</div>
+        <!-- International Tab -->
+        <div id="international-content" class="tab-content">
+            <div class="flex flex-col w-full md:flex-row">
+                <!-- Filter Controls -->
+                <div class="w-full mb-4 flex flex-wrap gap-2" style="background-color: var(--card-bg); padding: 10px; border-radius: 8px;">
+                    <span class="text-sm font-semibold mr-2 flex items-center">Filter by:</span>
+                    <button class="filter-btn active blue-filter" style="background-color: #dbeafe; color: #1e40af;" data-color="blue" onclick="toggleFilter('international', 'blue')">Regular</button>
+                    <button class="filter-btn active red-filter" style="background-color: #fee2e2; color: #b91c1c;" data-color="red" onclick="toggleFilter('international', 'red')">Extraordinary</button>
+                    <button class="filter-btn active purple-filter" style="background-color: #ede9fe; color: #5b21b6;" data-color="purple" onclick="toggleFilter('international', 'purple')">Deep State</button>
+                    <button class="filter-btn active white-filter" style="background-color: #f9fafb; color: #1f2937;" data-color="white" onclick="toggleFilter('international', 'white')">High Officials</button>
+                </div>
             </div>
             
-            <div class="flex flex-col md:flex-row">
-                <!-- Left Side: Chat Style News -->
-                <div class="w-full md:w-1/2 p-4 bg-white rounded-lg shadow-md mr-0 md:mr-4 mb-4 md:mb-0">
+            <div class="flex flex-col md:flex-row gap-4">
+                <!-- Left column: Chat-style news -->
+                <div class="w-full md:w-1/2 p-4 rounded-lg shadow-md" style="background-color: var(--card-bg); max-height: 600px; overflow-y: auto;">
                     <h2 class="text-xl font-bold mb-4">Political Updates</h2>
-                    <div class="news-container" id="international-news">
-                        <div class="chat-message regular-news">
-                            <p class="text-sm text-gray-500 mb-1">Today, 12:15 PM</p>
-                            <p>EU announces new climate initiative with targets for 2030.</p>
-                        </div>
-                        <div class="chat-message extraordinary-news">
-                            <p class="text-sm text-gray-500 mb-1">Today, 10:20 AM</p>
-                            <p>Unexpected alliance forms between rival Asian nations on trade policy.</p>
-                        </div>
-                        <div class="chat-message deepstate-news">
-                            <p class="text-sm text-gray-500 mb-1">Yesterday, 7:45 PM</p>
-                            <p>International financial institutions coordinate policy changes without public announcement.</p>
-                        </div>
-                        <div class="chat-message highrank-news">
-                            <p class="text-sm text-gray-500 mb-1">Yesterday, 2:30 PM</p>
-                            <p>UN Secretary-General calls emergency meeting with security council members.</p>
-                        </div>
+                    <div id="international-news-feed" class="space-y-4">
+                        <p class="text-gray-500 text-center italic">Loading news data...</p>
                     </div>
                 </div>
                 
-                <!-- Right Side: Cartoon Representations -->
-                <div class="w-full md:w-1/2 p-4 bg-white rounded-lg shadow-md">
+                <!-- Right column: Cartoon representations -->
+                <div class="w-full md:w-1/2 p-4 rounded-lg shadow-md" style="background-color: var(--card-bg); max-height: 600px; overflow-y: auto;">
                     <h2 class="text-xl font-bold mb-4">Political Figures</h2>
-                    <div class="news-container" id="international-cartoons">
-                        <div class="cartoon-container regular-news">
-                            <div class="flex">
-                                <div class="cartoon-image">
-                                    <i class="fas fa-user-tie text-6xl text-gray-500"></i>
-                                </div>
-                                <div class="ml-4 flex-1">
-                                    <h3 class="font-bold">EU Commission President</h3>
-                                    <div class="speech-bubble">
-                                        "Our new climate targets demonstrate Europe's continued leadership in addressing the global climate crisis."
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="cartoon-container extraordinary-news">
-                            <div class="flex">
-                                <div class="cartoon-image">
-                                    <i class="fas fa-user-tie text-6xl text-gray-500"></i>
-                                </div>
-                                <div class="ml-4 flex-1">
-                                    <h3 class="font-bold">Asian Trade Minister</h3>
-                                    <div class="speech-bubble">
-                                        "This unprecedented partnership shows that economic cooperation can overcome historical differences when mutual benefits are clear."
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="cartoon-container deepstate-news">
-                            <div class="flex">
-                                <div class="cartoon-image">
-                                    <i class="fas fa-university text-6xl text-gray-500"></i>
-                                </div>
-                                <div class="ml-4 flex-1">
-                                    <h3 class="font-bold">Central Bank Chairman</h3>
-                                    <div class="speech-bubble">
-                                        "The coordinated policy adjustments are routine measures to maintain global financial stability. The timing is coincidental."
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
+                    <div id="international-cartoons" class="space-y-4">
+                        <p class="text-gray-500 text-center italic">Loading cartoon representations...</p>
                     </div>
                 </div>
             </div>
+            
+            <!-- People vs Deep State Slider -->
+            <div class="slider-container mt-6">
+                <h3 class="font-semibold mb-2">People vs Deep State Influence</h3>
+                <input type="range" min="0" max="100" value="50" class="slider" id="international-slider">
+                <div class="flex justify-between mt-2">
+                    <span>People-Driven</span>
+                    <span>Deep State Influence</span>
+                </div>
+            </div>
         </div>
+
+        <footer class="mt-10 text-center text-sm text-gray-500">
+            <p>© 2023 Global News Dashboard - Updated hourly with AI-powered web crawling</p>
+        </footer>
     </div>
 
-    <footer class="bg-gray-800 text-white p-4 mt-8">
-        <div class="container mx-auto">
-            <div class="flex flex-col md:flex-row justify-between items-center">
-                <div>
-                    <p>© 2023 AI News Dashboard</p>
-                </div>
-                <div class="mt-4 md:mt-0">
-                    <p>Powered by Advanced Web Surfing AI Technology</p>
-                </div>
-            </div>
-        </div>
-    </footer>
-
     <script>
+        // NewsAPI Key
+        const apiKey = '330b7eb40246456dbf18361191ae93be';
+        
+        // Track active filters
+        const activeFilters = {
+            'israel': { blue: true, red: true, purple: true, white: true },
+            'usa': { blue: true, red: true, purple: true, white: true },
+            'international': { blue: true, red: true, purple: true, white: true }
+        };
+        
+        // Country mappings for API
+        const countryMapping = {
+            'israel': 'il',
+            'usa': 'us',
+            'international': 'gb' // Using UK as a proxy for international
+        };
+        
         // Tab switching functionality
-        document.querySelectorAll('.tab-btn').forEach(button => {
-            button.addEventListener('click', () => {
-                // Remove active class from all tabs
-                document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
-                document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
-                
-                // Add active class to clicked tab
-                button.classList.add('active');
-                document.getElementById(`${button.dataset.tab}-tab`).classList.add('active');
+        function changeTab(tabName) {
+            // Hide all tabs
+            document.querySelectorAll('.tab-content').forEach(tab => {
+                tab.classList.remove('active');
             });
-        });
-
-        // Filter functionality
-        document.querySelectorAll('.filter-btn').forEach(button => {
-            button.addEventListener('click', () => {
-                const color = button.dataset.color;
-                
-                // Toggle active state
-                if (color === 'all') {
-                    document.querySelectorAll('.filter-btn').forEach(btn => btn.classList.add('active'));
-                    document.querySelectorAll('.chat-message, .cartoon-container').forEach(item => {
-                        item.style.display = 'block';
-                    });
+            
+            // Show selected tab
+            document.getElementById(`${tabName}-content`).classList.add('active');
+            
+            // Update tab button styles
+            document.querySelectorAll('.tab-btn').forEach(btn => {
+                btn.classList.remove('border-b-2', 'border-blue-500', 'text-blue-600');
+                btn.style.backgroundColor = '';
+                btn.style.color = '';
+            });
+            
+            const activeTabBtn = document.getElementById(`tab-${tabName}`);
+            activeTabBtn.classList.add('border-b-2', 'border-blue-500', 'text-blue-600');
+            activeTabBtn.style.backgroundColor = 'var(--hover-color)';
+            activeTabBtn.style.color = 'var(--primary-color)';
+        }
+        
+        // Filter toggle functionality
+        function toggleFilter(tabName, color) {
+            activeFilters[tabName][color] = !activeFilters[tabName][color];
+            
+            // Update filter button appearance
+            const filterBtn = document.querySelector(`#${tabName}-content .${color}-filter`);
+            if (activeFilters[tabName][color]) {
+                filterBtn.classList.add('active');
+                filterBtn.style.opacity = '1';
+            } else {
+                filterBtn.classList.remove('active');
+                filterBtn.style.opacity = '0.5';
+            }
+            
+            // Apply filters to news items
+            document.querySelectorAll(`#${tabName}-news-feed .${color}-news`).forEach(item => {
+                if (activeFilters[tabName][color]) {
+                    item.style.display = 'block';
                 } else {
-                    button.classList.toggle('active');
-                    const showAll = document.querySelector('.filter-btn[data-color="all"]');
-                    
-                    // Check if we should update the "Show All" button
-                    const activeFilters = document.querySelectorAll('.filter-btn.active:not([data-color="all"])');
-                    if (activeFilters.length === 4) {
-                        showAll.classList.add('active');
-                    } else {
-                        showAll.classList.remove('active');
-                    }
-                    
-                    // Show/hide items based on filter
-                    document.querySelectorAll('.chat-message, .cartoon-container').forEach(item => {
-                        // Get all active color filters
-                        const activeColors = Array.from(document.querySelectorAll('.filter-btn.active:not([data-color="all"])'))
-                            .map(btn => btn.dataset.color);
-                        
-                        // Check if item matches any active filter
-                        let shouldShow = false;
-                        
-                        if (item.classList.contains('regular-news') && activeColors.includes('regular')) {
-                            shouldShow = true;
-                        } else if (item.classList.contains('extraordinary-news') && activeColors.includes('extraordinary')) {
-                            shouldShow = true;
-                        } else if (item.classList.contains('deepstate-news') && activeColors.includes('deepstate')) {
-                            shouldShow = true;
-                        } else if (item.classList.contains('highrank-news') && activeColors.includes('highrank')) {
-                            shouldShow = true;
-                        }
-                        
-                        item.style.display = shouldShow ? 'block' : 'none';
-                    });
+                    item.style.display = 'none';
                 }
             });
-        });
-
-        // Countdown timer functionality
-        function startCountdown() {
-            let totalSeconds = 3600; // 1 hour in seconds
-            const timerElement = document.getElementById('timer');
-            const progressValue = document.getElementById('progress-value');
             
-            function updateTimer() {
-                const minutes = Math.floor(totalSeconds / 60);
-                const seconds = totalSeconds % 60;
-                
-                timerElement.textContent = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
-                
-                // Update progress bar (inverted because we're counting down)
-                const progressPercent = 100 - (totalSeconds / 3600 * 100);
-                progressValue.style.width = `${progressPercent}%`;
-                
-                if (totalSeconds <= 0) {
-                    simulateUpdate();
-                    totalSeconds = 3600;
+            // Apply filters to cartoon items
+            document.querySelectorAll(`#${tabName}-cartoons .${color}-news`).forEach(item => {
+                if (activeFilters[tabName][color]) {
+                    item.style.display = 'block';
                 } else {
-                    totalSeconds--;
+                    item.style.display = 'none';
+                }
+            });
+        }
+        
+        // Dark mode toggle
+        document.getElementById('darkModeToggle').addEventListener('change', function() {
+            document.body.classList.toggle('dark-mode', this.checked);
+            localStorage.setItem('darkMode', this.checked ? 'enabled' : 'disabled');
+        });
+        
+        // Check for saved dark mode preference
+        if (localStorage.getItem('darkMode') === 'enabled') {
+            document.getElementById('darkModeToggle').checked = true;
+            document.body.classList.add('dark-mode');
+        }
+        
+        // Initialize tab styles
+        document.getElementById('tab-israel').classList.add('border-b-2', 'border-blue-500', 'text-blue-600');
+        document.getElementById('tab-israel').style.backgroundColor = 'var(--hover-color)';
+        document.getElementById('tab-israel').style.color = 'var(--primary-color)';
+        
+        // Fetch news from NewsAPI
+        async function fetchNews(country, category = 'general') {
+            try {
+                const response = await fetch(`https://newsapi.org/v2/top-headlines?country=${country}&category=${category}&apiKey=${apiKey}`);
+                const data = await response.json();
+                return data.articles || [];
+            } catch (error) {
+                console.error('Error fetching news:', error);
+                return [];
+            }
+        }
+        
+        // Categorize news item
+        function categorizeNews(article) {
+            const title = article.title?.toLowerCase() || '';
+            const description = article.description?.toLowerCase() || '';
+            const content = article.content?.toLowerCase() || '';
+            const combinedText = `${title} ${description} ${content}`;
+            
+            // White category: High-ranking officials
+            const highRankingTerms = ['president', 'prime minister', 'chancellor', 'king', 'queen', 'premier'];
+            for (const term of highRankingTerms) {
+                if (combinedText.includes(term)) {
+                    return 'white';
                 }
             }
             
-            // Update initially and then every second
-            updateTimer();
-            return setInterval(updateTimer, 1000);
+            // Red category: Extraordinary news
+            const extraordinaryTerms = ['breaking', 'urgent', 'crisis', 'scandal', 'controversy', 
+                                        'shocking', 'unprecedented', 'emergency', 'disaster'];
+            for (const term of extraordinaryTerms) {
+                if (combinedText.includes(term)) {
+                    return 'red';
+                }
+            }
+            
+            // Purple category: "Deep state" related
+            const deepStateTerms = ['conspiracy', 'deep state', 'shadow government', 'classified', 
+                                    'leak', 'whistleblower', 'surveillance', 'intelligence agency',
+                                    'secret', 'cover up', 'hidden agenda'];
+            for (const term of deepStateTerms) {
+                if (combinedText.includes(term)) {
+                    return 'purple';
+                }
+            }
+            
+            // Default: Blue category
+            return 'blue';
         }
-
-        // Simulate AI updating content
-        function simulateUpdate() {
-            const aiMessage = document.getElementById('ai-message');
-            const lastUpdate = document.getElementById('last-update');
-            
-            // Update last update time
-            const now = new Date();
-            lastUpdate.textContent = `${now.toLocaleTimeString()}`;
-            
-            // Simulate AI thinking
-            aiMessage.innerHTML = '<span class="text-yellow-600">Scanning news sources...</span>';
-            
-            setTimeout(() => {
-                aiMessage.innerHTML = '<span class="text-yellow-600">Analyzing content...</span>';
-            }, 1000);
-            
-            setTimeout(() => {
-                aiMessage.innerHTML = '<span class="text-yellow-600">Updating dashboard...</span>';
-            }, 2000);
-            
-            setTimeout(() => {
-                aiMessage.innerHTML = `Actively monitoring global news sources. Last update: <span>${now.toLocaleTimeString()}</span>`;
-                
-                // Add a new random news item to each tab
-                addRandomNews('israel-news', 'israel-cartoons');
-                addRandomNews('usa-news', 'usa-cartoons');
-                addRandomNews('international-news', 'international-cartoons');
-            }, 3000);
+        
+        // Format date
+        function formatDate(dateString) {
+            const date = new Date(dateString);
+            return date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) + 
+                   ' - ' + 
+                   date.toLocaleDateString([], { month: 'short', day: 'numeric' });
         }
-
-        // Generate random news content
-        function addRandomNews(newsContainerId, cartoonContainerId) {
-            const newsTypes = ['regular-news', 'extraordinary-news', 'deepstate-news', 'highrank-news'];
-            const randomType = newsTypes[Math.floor(Math.random() * newsTypes.length)];
+        
+        // Create chat-style news item
+        function createNewsItem(article, category) {
+            const colorClass = `${category}-news`;
+            const colorText = category === 'blue' ? 'Regular' : 
+                             category === 'red' ? 'Extraordinary' :
+                             category === 'purple' ? 'Deep State' : 'High Official';
             
-            const newsContainer = document.getElementById(newsContainerId);
-            const cartoonContainer = document.getElementById(cartoonContainerId);
-            
-            // Sample news content
-            const newsContent = {
-                'regular-news': [
-                    "Parliament debates new tax legislation affecting small businesses.",
-                    "National healthcare system announces funding increase for rural hospitals.",
-                    "Education ministry proposes curriculum changes for public schools."
-                ],
-                'extraordinary-news': [
-                    "Unexpected diplomatic breakthrough with neighboring country after decades of tension.",
-                    "Surprise announcement: Major political rivals agree to form coalition government.",
-                    "Unprecedented court ruling overturns longstanding political precedent."
-                ],
-                'deepstate-news': [
-                    "Intelligence directors meet privately with corporate leaders behind closed doors.",
-                    "Classified government program funding increased through obscure budget mechanism.",
-                    "Former security officials appointed to key regulatory positions without announcement."
-                ],
-                'highrank-news': [
-                    "Prime Minister makes unscheduled visit to military installation amid rising tensions.",
-                    "President announces major policy shift during emergency address to the nation.",
-                    "Head of state signs executive order implementing controversial emergency measures."
-                ]
-            };
-            
-            const cartoonContent = {
-                'regular-news': [
-                    "The proposed legislation aims to balance economic growth with fiscal responsibility.",
-                    "This funding increase ensures healthcare access for all citizens regardless of location.",
-                    "Our curriculum changes reflect the evolving needs of students in today's society."
-                ],
-                'extraordinary-news': [
-                    "We've overcome decades of mistrust to forge this historic agreement. It's a new chapter in our relations.",
-                    "Despite our different ideologies, we've found common ground to serve the national interest.",
-                    "This ruling reflects our commitment to justice over political considerations."
-                ],
-                'deepstate-news': [
-                    "These private sector partnerships are routine discussions to maintain economic stability.",
-                    "The budget adjustments simply reflect evolving national security priorities.",
-                    "These appointments were made through standard procedures. The timing is coincidental."
-                ],
-                'highrank-news': [
-                    "My visit today reinforces our commitment to military readiness during challenging times.",
-                    "The measures announced today are necessary to address unprecedented circumstances.",
-                    "This executive action ensures our government can respond effectively to emerging threats."
-                ]
-            };
-            
-            // Create and add new news message
-            const randomNewsIndex = Math.floor(Math.random() * newsContent[randomType].length);
-            const newsItem = document.createElement('div');
-            newsItem.className = `chat-message ${randomType}`;
-            newsItem.innerHTML = `
-                <p class="text-sm text-gray-500 mb-1">Just now</p>
-                <p>${newsContent[randomType][randomNewsIndex]}</p>
-            `;
-            
-            newsContainer.prepend(newsItem);
-            
-            // Create and add new cartoon message
-            const titles = {
-                'regular-news': ['Minister', 'Spokesperson', 'Party Leader'],
-                'extraordinary-news': ['Chief Negotiator', 'Coalition Leader', 'Court Justice'],
-                'deepstate-news': ['Intelligence Director', 'Security Advisor', 'Agency Head'],
-                'highrank-news': ['Prime Minister', 'President', 'Head of State']
-            };
-            
-            const randomTitle = titles[randomType][Math.floor(Math.random() * titles[randomType].length)];
-            const cartoonItem = document.createElement('div');
-            cartoonItem.className = `cartoon-container ${randomType}`;
-            cartoonItem.innerHTML = `
-                <div class="flex">
-                    <div class="cartoon-image">
-                        <i class="fas fa-user-tie text-6xl text-gray-500"></i>
+            return `
+                <div class="news-item ${colorClass}">
+                    <div class="flex justify-between items-start mb-2">
+                        <span class="news-tag" style="background-color: ${
+                            category === 'blue' ? '#dbeafe' : 
+                            category === 'red' ? '#fee2e2' :
+                            category === 'purple' ? '#ede9fe' : '#f9fafb'
+                        }; color: ${
+                            category === 'blue' ? '#1e40af' : 
+                            category === 'red' ? '#b91c1c' :
+                            category === 'purple' ? '#5b21b6' : '#1f2937'
+                        };">${colorText}</span>
+                        <small class="text-gray-500">${formatDate(article.publishedAt)}</small>
                     </div>
-                    <div class="ml-4 flex-1">
-                        <h3 class="font-bold">${randomTitle}</h3>
-                        <div class="speech-bubble">
-                            "${cartoonContent[randomType][randomNewsIndex]}"
+                    <div class="chat-bubble">
+                        <h3 class="font-bold mb-2">${article.title || 'Untitled'}</h3>
+                        <p>${article.description || 'No description available.'}</p>
+                        ${article.url ? `<a href="${article.url}" target="_blank" class="text-blue-500 text-sm mt-2 inline-block hover:underline">Read more</a>` : ''}
+                    </div>
+                    <div class="text-sm text-gray-500 mt-1">
+                        Source: ${article.source?.name || 'Unknown'}
+                    </div>
+                </div>
+            `;
+        }
+        
+        // Create cartoon representation
+        function createCartoonItem(article, category) {
+            // Extract person name from title (simplified approach)
+            let personName = '';
+            const title = article.title || '';
+            
+            // Simple name extraction - look for quotes or common patterns
+            if (title.includes('"')) {
+                const parts = title.split('"');
+                if (parts.length >= 3) {
+                    const beforeQuote = parts[0];
+                    const words = beforeQuote.split(' ');
+                    // Take last few words before the quote as the name
+                    personName = words.slice(-2).join(' ').replace(':', '').trim();
+                }
+            } else {
+                // Look for common patterns like "Name says" or "Name announces"
+                const commonPatterns = [' says ', ' said ', ' announces ', ' declared ', ' stated '];
+                for (const pattern of commonPatterns) {
+                    if (title.includes(pattern)) {
+                        personName = title.split(pattern)[0].trim();
+                        break;
+                    }
+                }
+            }
+            
+            // If we couldn't extract a name, use the source
+            if (!personName || personName.length < 3) {
+                personName = article.source?.name || 'Political Figure';
+            }
+            
+            const initials = personName.split(' ')
+                .map(word => word[0])
+                .join('')
+                .toUpperCase()
+                .substring(0, 2);
+            
+            // Generate a action text from the description
+            let actionText = article.description || 'Made a political statement.';
+            if (actionText.length > 120) {
+                actionText = actionText.substring(0, 117) + '...';
+            }
+            
+            return `
+                <div class="cartoon-container ${category}-news">
+                    <div class="flex items-center">
+                        <div class="cartoon-image mr-4" style="background-color: ${
+                            category === 'blue' ? '#dbeafe' : 
+                            category === 'red' ? '#fee2e2' :
+                            category === 'purple' ? '#ede9fe' : '#f9fafb'
+                        };">
+                            <span class="text-4xl font-bold" style="color: ${
+                                category === 'blue' ? '#1e40af' : 
+                                category === 'red' ? '#b91c1c' :
+                                category === 'purple' ? '#5b21b6' : '#1f2937'
+                            };">${initials}</span>
+                        </div>
+                        <div>
+                            <h3 class="font-semibold text-lg">${personName}</h3>
+                            <p class="text-sm text-gray-500">${article.source?.name || 'Political Figure'}</p>
                         </div>
                     </div>
+                    <div class="speech-bubble mt-3" style="background-color: ${
+                        category === 'blue' ? '#dbeafe' : 
+                        category === 'red' ? '#fee2e2' :
+                        category === 'purple' ? '#ede9fe' : '#f9fafb'
+                    }; color: ${
+                        category === 'blue' ? '#1e40af' : 
+                        category === 'red' ? '#b91c1c' :
+                        category === 'purple' ? '#5b21b6' : '#1f2937'
+                    };">${actionText}</div>
                 </div>
             `;
+        }
+        
+        // Update news content for a specific tab
+        async function updateTabContent(tabName) {
+            const countryCode = countryMapping[tabName];
+            const newsContainer = document.getElementById(`${tabName}-news-feed`);
+            const cartoonsContainer = document.getElementById(`${tabName}-cartoons`);
             
-            cartoonContainer.prepend(cartoonItem);
+            newsContainer.innerHTML = '<p class="text-center"><i class="fas fa-spinner fa-spin"></i> Fetching latest news...</p>';
+            cartoonsContainer.innerHTML = '<p class="text-center"><i class="fas fa-spinner fa-spin"></i> Generating cartoons...</p>';
             
-            // Remove oldest items if there are too many
-            if (newsContainer.children.length > 10) {
-                newsContainer.removeChild(newsContainer.lastChild);
-            }
-            
-            if (cartoonContainer.children.length > 5) {
-                cartoonContainer.removeChild(cartoonContainer.lastChild);
+            try {
+                // Fetch general and political news
+                const generalNews = await fetchNews(countryCode, 'general');
+                const politicalNews = await fetchNews(countryCode, 'politics');
+                
+                // Combine and remove duplicates
+                const allArticles = [...generalNews, ...politicalNews].filter((article, index, self) => 
+                    index === self.findIndex(a => a.title === article.title)
+                );
+                
+                if (allArticles.length === 0) {
+                    newsContainer.innerHTML = '<p class="text-center text-gray-500">No news available at the moment. Please try again later.</p>';
+                    cartoonsContainer.innerHTML = '<p class="text-center text-gray-500">No political figures to display at the moment.</p>';
+                    return;
+                }
+                
+                // Process articles for news feed
+                let newsHTML = '';
+                allArticles.forEach(article => {
+                    const category = categorizeNews(article);
+                    newsHTML += createNewsItem(article, category);
+                });
+                newsContainer.innerHTML = newsHTML || '<p class="text-center text-gray-500">No news available.</p>';
+                
+                // Process articles for cartoons
+                // Use a subset for cartoons to avoid duplication
+                const cartoonArticles = allArticles.slice(0, Math.min(6, allArticles.length));
+                let cartoonsHTML = '';
+                cartoonArticles.forEach(article => {
+                    const category = categorizeNews(article);
+                    cartoonsHTML += createCartoonItem(article, category);
+                });
+                cartoonsContainer.innerHTML = cartoonsHTML || '<p class="text-center text-gray-500">No political figures to display.</p>';
+                
+                // Set a "realistic" slider value based on news content
+                const purpleCount = allArticles.filter(a => categorizeNews(a) === 'purple').length;
+                const totalCount = allArticles.length;
+                const purplePercentage = Math.round((purpleCount / totalCount) * 100);
+                document.getElementById(`${tabName}-slider`).value = purplePercentage;
+                
+            } catch (error) {
+                console.error(`Error updating ${tabName} tab:`, error);
+                newsContainer.innerHTML = `<p class="text-center text-red-500">Error loading news: ${error.message}</p>`;
+                cartoonsContainer.innerHTML = `<p class="text-center text-red-500">Error loading political figures: ${error.message}</p>`;
             }
         }
-
-        // Initialize the dashboard
-        document.addEventListener('DOMContentLoaded', function() {
-            // Start the countdown timer
-            startCountdown();
+        
+        // Update all tabs
+        async function updateAllContent() {
+            await Promise.all([
+                updateTabContent('israel'),
+                updateTabContent('usa'),
+                updateTabContent('international')
+            ]);
             
-            // Apply tab button styling
-            document.querySelectorAll('.tab-btn').forEach(btn => {
-                btn.classList.add('hover:bg-gray-100', 'hover:text-gray-900', 'focus:text-gray-900');
-                if (btn.classList.contains('active')) {
-                    btn.classList.add('border-b-2', 'border-blue-500', 'text-blue-600');
-                }
-            });
-        });
-
-        // Event listener for tab buttons to add/remove styling classes
-        document.querySelectorAll('.tab-btn').forEach(btn => {
-            btn.addEventListener('click', function() {
-                document.querySelectorAll('.tab-btn').forEach(otherBtn => {
-                    otherBtn.classList.remove('border-b-2', 'border-blue-500', 'text-blue-600');
-                });
-                this.classList.add('border-b-2', 'border-blue-500', 'text-blue-600');
-            });
+            // Reset countdown
+            countdown = 3600;
+        }
+        
+        // Countdown timer
+        let countdown = 3600; // 1 hour in seconds
+        
+        function updateCountdown() {
+            const minutes = Math.floor(countdown / 60);
+            const seconds = countdown % 60;
+            
+            document.getElementById('countdown-timer').textContent = 
+                `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+            
+            countdown--;
+            
+            if (countdown < 0) {
+                countdown = 3600;
+                updateAllContent();
+            }
+        }
+        
+        // Initialize
+        document.addEventListener('DOMContentLoaded', function() {
+            // Set up countdown timer
+            setInterval(updateCountdown, 1000);
+            updateCountdown();
+            
+            // Load initial content
+            updateAllContent();
         });
     </script>
-
-</body></html>
+</body>
+</html>
